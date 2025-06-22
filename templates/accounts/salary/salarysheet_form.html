@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+  <div class="card shadow rounded-4">
+    <div class="card-header bg-primary text-white rounded-top-4">
+      <h4 class="mb-0">Create Salary Sheet</h4>
+    </div>
+    <div class="card-body">
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate id="salary-form">
+        {% csrf_token %}
+
+        <!-- Employee and Month -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="{{ form.employee.id_for_label }}" class="form-label">Employee</label>
+            {{ form.employee|add_class:"form-select" }}
+            {% if form.employee.errors %}
+              <div class="text-danger small">{{ form.employee.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ form.month.id_for_label }}" class="form-label">Month</label>
+            {{ form.month|add_class:"form-control" }}
+            {% if form.month.errors %}
+              <div class="text-danger small">{{ form.month.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Fixed Fields -->
+        <h5>Fixed Salary Components (Read Only)</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.basic_salary.label }}</label>
+            {{ form.basic_salary|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.house_rent.label }}</label>
+            {{ form.house_rent|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.conveyance.label }}</label>
+            {{ form.conveyance|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.provident_fund.label }}</label>
+            {{ form.provident_fund|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.medical_allowance.label }}</label>
+            {{ form.medical_allowance|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.special_allowance.label }}</label>
+            {{ form.special_allowance|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.telephone_bill.label }}</label>
+            {{ form.telephone_bill|add_class:"form-control"|attr:"readonly:true" }}
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Additional Inputs -->
+        <h5>Additional Fields</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="{{ form.bonus.id_for_label }}" class="form-label">Bonus</label>
+            {{ form.bonus|add_class:"form-control" }}
+            {% if form.bonus.errors %}
+              <div class="text-danger small">{{ form.bonus.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="{{ form.advance_salary.id_for_label }}" class="form-label">Advance Salary</label>
+            {{ form.advance_salary|add_class:"form-control" }}
+            {% if form.advance_salary.errors %}
+              <div class="text-danger small">{{ form.advance_salary.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="{{ form.salary_deduction.id_for_label }}" class="form-label">Salary Deduction</label>
+            {{ form.salary_deduction|add_class:"form-control" }}
+            {% if form.salary_deduction.errors %}
+              <div class="text-danger small">{{ form.salary_deduction.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Note Field -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.note.id_for_label }}" class="form-label">Note</label>
+            {{ form.note|add_class:"form-control"|attr:"rows:2" }}
+            {% if form.note.errors %}
+              <div class="text-danger small">{{ form.note.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Computed Fields -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Total Salary</label>
+            <input type="text" id="total_salary" class="form-control bg-light" readonly value="0.00">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Payment Status</label>
+            <input type="text" id="payment_status" class="form-control bg-light" readonly value="unpaid">
+          </div>
+        </div>
+
+        <!-- Hidden fields for actual form -->
+        {{ form.total_salary }}
+        {{ form.payment_status }}
+
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-success px-4">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  const fixedFields = [
+    "basic_salary", "house_rent", "conveyance", "provident_fund",
+    "medical_allowance", "special_allowance", "telephone_bill"
+  ];
+
+  const form = document.getElementById("salary-form");
+  const employeeField = document.getElementById("id_employee");
+
+  employeeField.addEventListener("change", function () {
+    const employeeId = this.value;
+    if (!employeeId) {
+      clearFixedFields();
+      calculateTotal();
+      return;
+    }
+
+    // Loading effect
+    form.classList.add("opacity-50");
+    employeeField.disabled = true;
+
+    fetch(`/accounts/api/get-salary-structure/${employeeId}/`)
+      .then(res => res.json())
+      .then(data => {
+        fixedFields.forEach(field => {
+          const el = document.getElementById('id_' + field);
+          if (el) el.value = data[field] || 0;
+        });
+        calculateTotal();
+      })
+      .catch(() => {
+        clearFixedFields();
+        calculateTotal();
+      })
+      .finally(() => {
+        form.classList.remove("opacity-50");
+        employeeField.disabled = false;
+      });
+  });
+
+  function clearFixedFields() {
+    fixedFields.forEach(field => {
+      const el = document.getElementById('id_' + field);
+      if (el) el.value = '0.00';
+    });
+  }
+
+  ['id_bonus', 'id_advance_salary', 'id_salary_deduction'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calculateTotal);
+  });
+
+  function calculateTotal() {
+    const getVal = id => parseFloat(document.getElementById(id)?.value) || 0;
+    const fixedSum = fixedFields.map(f => getVal('id_' + f)).reduce((a, b) => a + b, 0);
+
+    const bonus = getVal('id_bonus');
+    const advance = getVal('id_advance_salary');
+    const deduction = getVal('id_salary_deduction');
+    const paid = 0; // Replace with `getVal('id_paid_amount')` if field is added
+
+    const total = fixedSum + bonus - advance - deduction;
+    document.getElementById('total_salary').value = total.toFixed(2);
+
+    let status = 'unpaid';
+    if (paid >= total && total > 0) status = 'paid';
+    else if (paid > 0) status = 'partial';
+
+    document.getElementById('payment_status').value = status;
+
+    // Assign to hidden fields
+    document.getElementById('id_total_salary').value = total.toFixed(2);
+    document.getElementById('id_payment_status').value = status;
+  }
+
+  window.onload = calculateTotal;
+</script>
+{% endblock %}

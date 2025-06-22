@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>বেতন শীট মুছে ফেলুন</h2>
+    <p>আপনি কি নিশ্চিত যে আপনি <strong>{{ object.employee.name }} এর {{ object.month|date:"F Y" }} মাসের বেতন শীটটি মুছে ফেলতে চান?</strong></p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">হ্যাঁ, মুছে ফেলুন</button>
+        <a href="{% url 'accounts:salarysheet_list' %}" class="btn btn-secondary">বাতিল</a>
+    </form>
+</div>
+{% endblock %}

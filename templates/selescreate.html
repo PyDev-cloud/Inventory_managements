@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-3">New Sale Entry</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6 form-floating">
+                {{ form.customer|add_class:"form-control" }}
+                <label for="{{ form.customer.id_for_label }}">Customer</label>
+                {% if form.customer.errors %}
+                    <div class="text-danger small">{{ form.customer.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-3 form-floating">
+                {{ form.invoice_no|add_class:"form-control" }}
+                <label for="{{ form.invoice_no.id_for_label }}">Invoice No</label>
+                {% if form.invoice_no.errors %}
+                    <div class="text-danger small">{{ form.invoice_no.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-3 form-floating">
+                {{ form.payment_method|add_class:"form-control" }}
+                <label for="{{ form.payment_method.id_for_label }}">Payment Method</label>
+                {% if form.payment_method.errors %}
+                    <div class="text-danger small">{{ form.payment_method.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4 form-floating">
+                {{ form.packing_charge|add_class:"form-control" }}
+                <label for="{{ form.packing_charge.id_for_label }}">Packing Charge</label>
+                {% if form.packing_charge.errors %}
+                    <div class="text-danger small">{{ form.packing_charge.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 form-floating">
+                {{ form.delivery_charge|add_class:"form-control" }}
+                <label for="{{ form.delivery_charge.id_for_label }}">Delivery Charge</label>
+                {% if form.delivery_charge.errors %}
+                    <div class="text-danger small">{{ form.delivery_charge.errors }}</div>
+                {% endif %}
+            </div>
+            
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4 form-floating">
+                {{ form.total_amount|add_class:"form-control" }}
+                <label for="{{ form.total_amount.id_for_label }}">Total Amount</label>
+                {% if form.total_amount.errors %}
+                    <div class="text-danger small">{{ form.total_amount.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 form-floating">
+                {{ form.paid_amount|add_class:"form-control" }}
+                <label for="{{ form.paid_amount.id_for_label }}">Paid Amount</label>
+                {% if form.paid_amount.errors %}
+                    <div class="text-danger small">{{ form.paid_amount.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 form-floating">
+                {{ form.due_amount|add_class:"form-control" }}
+                <label for="{{ form.due_amount.id_for_label }}">Due Amount</label>
+                {% if form.due_amount.errors %}
+                    <div class="text-danger small">{{ form.due_amount.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3 form-floating">
+            {{ form.note|add_class:"form-control" }}
+            <label for="{{ form.note.id_for_label }}">Note</label>
+            {% if form.note.errors %}
+                <div class="text-danger small">{{ form.note.errors }}</div>
+            {% endif %}
+        </div>
+
+        <hr>
+        <h4>Sale Items</h4>
+
+        <div id="formset-container">
+            {{ formset.management_form }}
+
+            {% if formset.non_form_errors %}
+                <div class="alert alert-danger">
+                    {{ formset.non_form_errors }}
+                </div>
+            {% endif %}
+
+            {% for form in formset %}
+                <div class="formset-row border rounded p-3 mb-3 bg-light position-relative">
+                    <div class="row align-items-end">
+                        <div class="col-md-4 form-floating">
+                            {{ form.product|add_class:"form-control" }}
+                            <label for="{{ form.product.id_for_label }}">Product</label>
+                            {% if form.product.errors %}
+                                <div class="text-danger small">{{ form.product.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 form-floating">
+                            {{ form.quantity|add_class:"form-control qty-input" }}
+                            <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+                            {% if form.quantity.errors %}
+                                <div class="text-danger small">{{ form.quantity.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 form-floating">
+                            {{ form.unit_price|add_class:"form-control price-input" }}
+                            <label for="{{ form.unit_price.id_for_label }}">Unit Price</label>
+                            {% if form.unit_price.errors %}
+                                <div class="text-danger small">{{ form.unit_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 form-floating">
+                            <input type="text" class="form-control subtotal" readonly>
+                            <label>Subtotal</label>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            {% if forloop.first %}
+                                <button type="button" class="btn btn-success add-form-row">➕</button>
+                            {% else %}
+                                <button type="button" class="btn btn-danger remove-form-row">➖</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-end mt-3">
+            <button type="submit" class="btn btn-primary">💾 Save Sale</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("formset-container");
+    const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
+    const totalAmountInput = document.getElementById("id_total_amount");
+    const paidAmountInput = document.getElementById("id_paid_amount");
+    const dueAmountInput = document.getElementById("id_due_amount");
+    const packingChargeInput = document.getElementById("id_packing_charge");
+    const deliveryChargeInput = document.getElementById("id_delivery_charge");
+
+    function updateSubtotals() {
+        const rows = container.querySelectorAll(".formset-row");
+        let grandTotal = 0;
+
+        rows.forEach(row => {
+            const qty = parseFloat(row.querySelector(".qty-input").value) || 0;
+            const price = parseFloat(row.querySelector(".price-input").value) || 0;
+            const subtotal = qty * price;
+            row.querySelector(".subtotal").value = subtotal.toFixed(2);
+            grandTotal += subtotal;
+        });
+
+        const packing = parseFloat(packingChargeInput.value) || 0;
+        const delivery = parseFloat(deliveryChargeInput.value) || 0;
+
+        grandTotal += packing + delivery;
+
+        if (totalAmountInput) totalAmountInput.value = grandTotal.toFixed(2);
+
+        const paid = parseFloat(paidAmountInput.value) || 0;
+        const due = grandTotal - paid;
+
+        if (dueAmountInput) dueAmountInput.value = due.toFixed(2);
+    }
+
+    function cloneEmptyForm() {
+        let totalForms = parseInt(totalFormsInput.value);
+        let lastForm = container.querySelector(".formset-row:last-child");
+        let newForm = lastForm.cloneNode(true);
+
+        newForm.querySelectorAll("input, select").forEach(el => {
+            if (el.name) {
+                const newName = el.name.replace(/-\d+-/, `-${totalForms}-`);
+                const newId = el.id.replace(/-\d+-/, `-${totalForms}-`);
+                el.name = newName;
+                el.id = newId;
+
+                if (!el.classList.contains("subtotal")) {
+                    el.value = "";
+                } else {
+                    el.value = "0.00";
+                }
+            }
+        });
+
+        const actionBtn = newForm.querySelector(".add-form-row, .remove-form-row");
+        if (actionBtn) {
+            actionBtn.className = "btn btn-danger remove-form-row";
+            actionBtn.innerText = "➖";
+        }
+
+        container.appendChild(newForm);
+        totalFormsInput.value = totalForms + 1;
+        updateSubtotals();
+    }
+
+    container.addEventListener("input", updateSubtotals);
+
+    [packingChargeInput, deliveryChargeInput, paidAmountInput].forEach(el => {
+        if (el) el.addEventListener("input", updateSubtotals);
+    });
+
+    container.addEventListener("click", function (e) {
+        if (e.target.classList.contains("add-form-row")) {
+            cloneEmptyForm();
+        }
+
+        if (e.target.classList.contains("remove-form-row")) {
+            const rows = container.querySelectorAll(".formset-row");
+            if (rows.length > 1) {
+                e.target.closest(".formset-row").remove();
+                totalFormsInput.value = container.querySelectorAll(".formset-row").length;
+                updateSubtotals();
+            }
+        }
+    });
+
+    updateSubtotals();
+});
+</script>
+
+{% endblock %}

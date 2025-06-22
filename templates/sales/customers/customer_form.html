@@ -1,0 +1,71 @@
+{% extends "../../base.html" %}
+{% load static %}
+{% block content %}
+<div class="py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card shadow-4">
+
+        <div class="card-header bg-primary text-white text-center">
+          <h4 class="mb-0">👤 Add New Customer</h4>
+        </div>
+
+        <div class="card-body">
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="name" class="form-label fw-semibold">Name</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ form.name.value|default_if_none:'' }}">
+                {% if form.name.errors %}
+                  <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label for="phone" class="form-label fw-semibold">Phone</label>
+                <input type="text" name="phone" id="phone" class="form-control" value="{{ form.phone.value|default_if_none:'' }}">
+                {% if form.phone.errors %}
+                  <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ form.email.value|default_if_none:'' }}">
+                {% if form.email.errors %}
+                  <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label for="address" class="form-label fw-semibold">Address</label>
+                <textarea name="address" id="address" class="form-control" rows="2">{{ form.address.value|default_if_none:'' }}</textarea>
+                {% if form.address.errors %}
+                  <div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            
+
+            <div class="text-center d-flex justify-content-center gap-3">
+              <button type="submit" class="btn btn-success btn-rounded px-5">
+                💾 Save Customer
+              </button>
+              <a href="{% url 'sales:customer_list' %}" class="btn btn-secondary btn-rounded px-4">
+                ❌ Cancel
+              </a>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

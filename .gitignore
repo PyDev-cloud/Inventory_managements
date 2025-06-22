@@ -1,0 +1,24 @@
+# Python and Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Django static/media
+/staticfiles/
+/media/
+
+# Virtualenv
+venv/
+env/
+
+# Environment variables
+.env
+
+# OS
+.DS_Store
+
+# Node
+node_modules/

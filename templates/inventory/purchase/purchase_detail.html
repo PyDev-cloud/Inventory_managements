@@ -1,0 +1,74 @@
+{% extends "../../base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Purchase Details</h4>
+      <small>Invoice: <strong>{{ purchase.invoice_no }}</strong></small>
+    </div>
+    <div class="card-body">
+
+      <!-- Purchase Info -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <p><strong>Supplier:</strong> {{ purchase.supplier.name }}</p>
+          <p><strong>Date:</strong> {{ purchase.date }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Payment Method:</strong> {{ purchase.get_payment_method_display }}</p>
+          <p><strong>Note:</strong> {{ purchase.note|default:"—" }}</p>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <h5 class="mb-3">Items</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in purchase.items.all %}
+            <tr>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.unit_price }}</td>
+              <td>{{ item.quantity }}</td>
+              <td class="text-end">{{ item.subtotal|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">No items found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary -->
+      <div class="row mt-4 justify-content-end">
+        <div class="col-md-6">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Total Amount:</strong> <span>{{ purchase.total_amount }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Paid:</strong> <span>{{ purchase.paid_amount }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Due:</strong> <span>{{ purchase.due_amount }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

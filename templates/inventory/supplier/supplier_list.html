@@ -1,0 +1,61 @@
+{% extends "../../base.html" %}
+{% load static %}
+
+{% block content %}
+<div class=" py-4">
+  <h2 class="mb-4 text-center">Suppliers List</h2>
+
+  <!-- Show/Hide Search Filter + Add Supplier Button -->
+  <div class="d-flex justify-content-center mb-3 gap-3 flex-wrap">
+    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false" aria-controls="searchCollapse">
+      🔍 Show/Hide Search
+    </button>
+    <a href="{% url 'inventory:supplier_create' %}" class="btn btn-primary btn-rounded px-4">
+      Add New Supplier
+    </a>
+  </div>
+
+  <div class="collapse mb-4" id="searchCollapse">
+    <form method="get" class="d-flex gap-2 flex-wrap justify-content-center">
+      <input type="text" name="q" class="form-control flex-grow-1" placeholder="Search by name or phone" value="{{ query }}">
+      <button type="submit" class="btn btn-primary">Search</button>
+      <a href="{% url 'inventory:supplier-list' %}" class="btn btn-secondary">Reset</a>
+    </form>
+  </div>
+
+  {% if suppliers %}
+  <div class="table-responsive ">
+    <table class="table table-striped table-hover align-middle text-center">
+      <thead class="table-light text-nowrap">
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Total Purchase</th>
+          <th>Total Payment</th>
+          <th>Advance Payment</th>
+          <th>Due Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+          <td>{{ supplier.name }}</td>
+          <td>{{ supplier.phone }}</td>
+          <td>{{ supplier.email|default:"-" }}</td>
+          <td>{{ supplier.address|default:"-" }}</td>
+          <td>৳{{ supplier.total_purchase }}</td>
+          <td>৳{{ supplier.total_payment }}</td>
+          <td>৳{{ supplier.advance_payment }}</td>
+          <td>৳{{ supplier.due_amount }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-center text-muted">No suppliers found. Please add some.</p>
+  {% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <h2 class="card-title text-danger mb-4">Confirm Delete</h2>
+            <p class="fs-5">Are you sure you want to delete <strong>"{{ object }}"</strong>?</p>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger me-2">
+                    <i class="bi bi-trash"></i> Yes, Delete
+                </button>
+            </form>
+            <a href="{% url 'accounts:bankaccount_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancel
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

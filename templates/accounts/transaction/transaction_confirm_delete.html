@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>লেনদেন মুছে ফেলুন</h2>
+    <p>আপনি কি নিশ্চিতভাবে <strong>{{ object }}</strong> লেনদেনটি মুছে ফেলতে চান?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">হ্যাঁ, মুছে ফেলুন</button>
+        <a href="{% url 'accounts:transaction_list' %}" class="btn btn-secondary">বাতিল</a>
+    </form>
+</div>
+{% endblock %}

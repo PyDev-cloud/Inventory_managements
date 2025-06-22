@@ -1,0 +1,81 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Transfer Stock from Godown to Office</h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.product.id_for_label }}" class="form-label">Product</label>
+                        {{ form.product }}
+                        {% if form.product.errors %}
+                            <div class="text-danger">{{ form.product.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Current Godown Stock</label>
+                        <input type="text" id="godown-stock" class="form-control" value="0" readonly>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="{{ form.quantity.id_for_label }}" class="form-label">Transfer Office Stock </label>
+                        {{ form.quantity }}
+                        {% if form.quantity.errors %}
+                            <div class="text-danger">{{ form.quantity.errors }}</div>
+                        {% endif %}
+                        <div id="quantity-error" class="text-danger mt-1" style="display:none;">Quantity exceeds godown stock!</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Transfer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const productStock = {{ product_stock_json|safe }};
+    const productSelect = document.getElementById('{{ form.product.id_for_label }}');
+    const godownStockField = document.getElementById('godown-stock');
+    const quantityInput = document.getElementById('{{ form.quantity.id_for_label }}');
+    const quantityError = document.getElementById('quantity-error');
+
+    function updateGodownStock() {
+        const productId = productSelect.value;
+        const stock = productStock[productId] || 0;
+        godownStockField.value = stock;
+        validateQuantity();
+    }
+
+    function validateQuantity() {
+        const qty = parseInt(quantityInput.value) || 0;
+        const stock = parseInt(godownStockField.value) || 0;
+        if (qty > stock) {
+            quantityError.style.display = 'block';
+        } else {
+            quantityError.style.display = 'none';
+        }
+    }
+
+    productSelect.addEventListener('change', updateGodownStock);
+    quantityInput.addEventListener('input', validateQuantity);
+
+    // initialize on page load
+    updateGodownStock();
+</script>
+{% endblock %}

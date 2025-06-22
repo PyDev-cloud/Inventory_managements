@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">💰 Salary Payment</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="{{ form.salary_sheet.id_for_label }}" class="form-label fw-semibold">Salary Sheet</label>
+                                {{ form.salary_sheet|add_class:"form-control" }}
+                                {% for error in form.salary_sheet.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">Amount</label>
+                                {{ form.amount|add_class:"form-control" }}
+                                {% for error in form.amount.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.transaction_account.id_for_label }}" class="form-label fw-semibold">Payment Method</label>
+                                {{ form.transaction_account|add_class:"form-control" }}
+                                {% for error in form.transaction_account.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Total Paid Amount</label>
+                                <input type="text" id="paid-amount" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Total Due Amount</label>
+                                <input type="text" id="due-amount" class="form-control" readonly>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-rounded px-5">
+                                💾 Submit Payment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let paidAmount = 0;
+    let totalSalary = 0;
+
+    function updateDueAmount() {
+        const inputAmount = parseFloat($('#id_amount').val()) || 0;
+        const due = totalSalary - (paidAmount + inputAmount);
+        $('#due-amount').val(due.toFixed(2));
+    }
+
+    $(document).ready(function () {
+        $('#id_salary_sheet').change(function () {
+            const sheetId = $(this).val();
+            if (sheetId) {
+                $.ajax({
+                    url: `/accounts/api/get-salary-structure-from-sheet/${sheetId}/`,
+                    type: 'GET',
+                    success: function (data) {
+                        paidAmount = parseFloat(data.paid_amount || 0);
+                        totalSalary = parseFloat(data.total_salary || 0);
+
+                        $('#paid-amount').val(paidAmount.toFixed(2));
+                        updateDueAmount();  // Calculate due immediately
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Failed to load data: " + error);
+                        $('#paid-amount').val('');
+                        $('#due-amount').val('');
+                    }
+                });
+            } else {
+                paidAmount = 0;
+                totalSalary = 0;
+                $('#paid-amount').val('');
+                $('#due-amount').val('');
+            }
+        });
+
+        // 🔁 Update due when typing in amount
+        $('#id_amount').on('input', function () {
+            updateDueAmount();
+        });
+    });
+</script>
+{% endblock %}

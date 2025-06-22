@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h4 class="mb-0">💸 Create Fund Transfer</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Transaction From -->
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.transaction_form.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.transaction_form.label }}
+                        </label>
+                        {{ form.transaction_form|add_class:"form-control" }}
+                        {% for error in form.transaction_form.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Transaction To -->
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.transaction_to.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.transaction_to.label }}
+                        </label>
+                        {{ form.transaction_to|add_class:"form-control" }}
+                        {% for error in form.transaction_to.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.amount.label }}
+                        </label>
+                        {{ form.amount|add_class:"form-control" }}
+                        {% for error in form.amount.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Note -->
+                    <div class="col-md-12 mb-3">
+                        <label for="{{ form.note.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.note.label }}
+                        </label>
+                        {{ form.note|add_class:"form-control" }}
+                        {% for error in form.note.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4">
+                        🚀 Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

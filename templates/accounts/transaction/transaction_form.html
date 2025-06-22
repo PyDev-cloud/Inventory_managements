@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        {% if object %} ✏️ লেনদেন সম্পাদনা করুন {% else %} ➕ নতুন লেনদেন যোগ করুন {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.account_type.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.account_type.label }}
+                                </label>
+                                {{ form.account_type|add_class:"form-control" }}
+                                {% for error in form.account_type.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.bank_account.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.bank_account.label }}
+                                </label>
+                                {{ form.bank_account|add_class:"form-control" }}
+                                {% for error in form.bank_account.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.salary_sheet.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.salary_sheet.label }}
+                                </label>
+                                {{ form.salary_sheet|add_class:"form-control" }}
+                                {% for error in form.salary_sheet.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.expense.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.expense.label }}
+                                </label>
+                                {{ form.expense|add_class:"form-control" }}
+                                {% for error in form.expense.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.amount.label }}
+                                </label>
+                                {{ form.amount|add_class:"form-control" }}
+                                {% for error in form.amount.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.transaction_type.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.transaction_type.label }}
+                                </label>
+                                {{ form.transaction_type|add_class:"form-control" }}
+                                {% for error in form.transaction_type.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.note.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.note.label }}
+                            </label>
+                            {{ form.note|add_class:"form-control" }}
+                            {% for error in form.note.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-success px-5">
+                                💾 সংরক্ষণ করুন
+                            </button>
+                            <a href="{% url 'accounts:transaction_list' %}" class="btn btn-secondary px-4 ms-2">
+                                ❌ বাতিল
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

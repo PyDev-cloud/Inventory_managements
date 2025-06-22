@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow rounded-4">
+    <div class="card-header bg-primary text-white rounded-top-4">
+      <h4 class="mb-0">
+        {{ view.object.pk|yesno:"Update Salary Structure,Create Salary Structure" }}
+      </h4>
+    </div>
+    <div class="card-body">
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="{{ form.employee.id_for_label }}" class="form-label">Employee</label>
+            {{ form.employee|add_class:"form-select" }}
+            {% if form.employee.errors %}
+              <div class="text-danger small">{{ form.employee.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr>
+
+        <h5>Fixed Salary Components</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.basic_salary.label }}</label>
+            {{ form.basic_salary|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.house_rent.label }}</label>
+            {{ form.house_rent|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.conveyance.label }}</label>
+            {{ form.conveyance|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.provident_fund.label }}</label>
+            {{ form.provident_fund|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.medical_allowance.label }}</label>
+            {{ form.medical_allowance|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.special_allowance.label }}</label>
+            {{ form.special_allowance|add_class:"form-control fixed-salary-field" }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">{{ form.telephone_bill.label }}</label>
+            {{ form.telephone_bill|add_class:"form-control fixed-salary-field" }}
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Total Salary</label>
+            <input type="text" class="form-control bg-light" id="total_salary_display" readonly value="0.00">
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+          <button type="submit" class="btn btn-success px-4">Save</button>
+          <a href="{% url 'accounts:salarystructure_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function calculateFixedTotal() {
+    let total = 0.0;
+    document.querySelectorAll('.fixed-salary-field').forEach(input => {
+      total += parseFloat(input.value) || 0;
+    });
+    document.getElementById('total_salary_display').value = total.toFixed(2);
+  }
+
+  document.querySelectorAll('.fixed-salary-field').forEach(input => {
+    input.addEventListener('input', calculateFixedTotal);
+  });
+
+  window.onload = calculateFixedTotal;
+</script>
+{% endblock %}

@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% if form.errors %}
+  <div class="alert alert-danger">
+    <strong>Form Errors:</strong>
+    <ul>
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li>{{ field.label }}: {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if formset.errors %}
+  <div class="alert alert-danger">
+    <strong>Formset Errors:</strong>
+    <ul>
+      {% for form_errors in formset.errors %}
+        {% for field, errors in form_errors.items %}
+          {% for error in errors %}
+            <li>{{ field }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">New Sale Entry</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Customer</label>
+            {{ form.customer|add_class:"form-select" }}
+            {% for err in form.customer.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Payment Method</label>
+            {{ form.payment_method|add_class:"form-select" }}
+            {% for err in form.payment_method.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Advance Available</label>
+            <input type="text" class="form-control bg-light" id="advance-balance" readonly>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label class="form-label">Total Amount</label>
+            {{ form.total_amount|add_class:"form-control" }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Packing Charge</label>
+            {{ form.packing_charge|add_class:"form-control"|attr:"id:id_packing_charge" }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Delivery Charge</label>
+            {{ form.delivery_charge|add_class:"form-control"|attr:"id:id_delivery_charge" }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Discount</label>
+            {{ form.discount_amount|add_class:"form-control" }}
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label class="form-label">Paid Amount</label>
+            {{ form.paid_amount|add_class:"form-control" }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Due Amount</label>
+            {{ form.due_amount|add_class:"form-control" }}
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Paid From Advance</label>
+            <input type="text" class="form-control" id="paid-from-advance" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Paid From Account</label>
+            <input type="text" class="form-control" id="paid-from-method" readonly>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Note</label>
+          {{ form.note|add_class:"form-control" }}
+        </div>
+
+        <hr>
+        <h5>Sale Items</h5>
+        {{ formset.management_form }}
+
+        <div id="formset-container">
+          {% for f in formset %}
+            <div class="border p-3 rounded mb-3 formset-row bg-light-subtle">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                  <label class="form-label">Product</label>
+                  {{ f.product|add_class:"form-select" }}
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Quantity</label>
+                  {{ f.quantity|add_class:"form-control qty-input" }}
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Unit Price</label>
+                  {{ f.unit_price|add_class:"form-control price-input" }}
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Subtotal</label>
+                  <input type="text" class="form-control subtotal" readonly>
+                </div>
+                <div class="col-md-2 text-end">
+                  {% if forloop.first %}
+                    <button type="button" class="btn btn-success add-form-row">➕</button>
+                  {% else %}
+                    <button type="button" class="btn btn-danger remove-form-row">➖</button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary mt-3">
+            💾 Save Sale
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const customerSelect = document.getElementById("id_customer");
+  const paidInput = document.getElementById("id_paid_amount");
+  const discountInput = document.getElementById("id_discount_amount");
+  const totalInput = document.getElementById("id_total_amount");
+  const packingInput = document.getElementById("id_packing_charge");
+  const deliveryInput = document.getElementById("id_delivery_charge");
+  const dueInput = document.getElementById("id_due_amount");
+  const fromAdvance = document.getElementById("paid-from-advance");
+  const fromMethod = document.getElementById("paid-from-method");
+  const advanceBalanceDiv = document.getElementById("advance-balance");
+
+  // Map customer_id to advance payment amount from backend context variable 'customers'
+  const advanceMap = {
+    {% for c in customers %}
+      "{{ c.id }}": {{ c.advance_payment|floatformat:2 }},
+    {% endfor %}
+  };
+
+  function updateSubtotals() {
+    const rows = document.querySelectorAll(".formset-row");
+    let grandTotal = 0;
+
+    rows.forEach(row => {
+      const qty = parseFloat(row.querySelector(".qty-input")?.value) || 0;
+      const price = parseFloat(row.querySelector(".price-input")?.value) || 0;
+      const subtotal = qty * price;
+      row.querySelector(".subtotal").value = subtotal.toFixed(2);
+      grandTotal += subtotal;
+    });
+
+    const discount = parseFloat(discountInput.value) || 0;
+    const packing = parseFloat(packingInput.value) || 0;
+    const delivery = parseFloat(deliveryInput.value) || 0;
+
+    // Updated total = grandTotal + packing + delivery - discount
+    const totalAfterAll = Math.max(grandTotal + packing + delivery - discount, 0);
+    totalInput.value = totalAfterAll.toFixed(2);
+
+    const paid = parseFloat(paidInput.value) || 0;
+    const due = Math.max(totalAfterAll - paid, 0);
+    dueInput.value = due.toFixed(2);
+
+    updateAdvanceSplit(paid);
+  }
+
+  function updateAdvanceSplit(paid) {
+    const customerId = customerSelect.value;
+    const advance = parseFloat(advanceMap[customerId]) || 0;
+    const fromAdv = Math.min(paid, advance);
+    const fromAcct = paid - fromAdv;
+
+    fromAdvance.value = fromAdv.toFixed(2);
+    fromMethod.value = fromAcct.toFixed(2);
+    advanceBalanceDiv.value = `৳ ${advance.toFixed(2)}`;
+  }
+
+  function cloneFormsetRow() {
+    const container = document.getElementById("formset-container");
+    const totalFormsInput = document.getElementById("id_form-TOTAL_FORMS");
+    const newFormIndex = parseInt(totalFormsInput.value);
+    const lastRow = container.querySelector(".formset-row:last-child");
+    const newRow = lastRow.cloneNode(true);
+
+    newRow.querySelectorAll("input, select").forEach(input => {
+      if (input.name) {
+        input.name = input.name.replace(/-\d+-/, `-${newFormIndex}-`);
+        input.id = input.id.replace(/-\d+-/, `-${newFormIndex}-`);
+        if (!input.classList.contains("subtotal")) input.value = "";
+      }
+    });
+
+    // Replace add button in clone with remove button
+    newRow.querySelector(".add-form-row").outerHTML = `<button type="button" class="btn btn-danger remove-form-row">➖</button>`;
+    container.appendChild(newRow);
+    totalFormsInput.value = newFormIndex + 1;
+    updateSubtotals();
+  }
+
+  document.getElementById("formset-container").addEventListener("click", function (e) {
+    if (e.target.classList.contains("add-form-row")) {
+      cloneFormsetRow();
+    } else if (e.target.classList.contains("remove-form-row")) {
+      const row = e.target.closest(".formset-row");
+      if (document.querySelectorAll(".formset-row").length > 1) {
+        row.remove();
+        updateSubtotals();
+      }
+    }
+  });
+
+  // Event listeners for recalculation
+  document.querySelectorAll(".qty-input, .price-input").forEach(el => {
+    el.addEventListener("input", updateSubtotals);
+  });
+  discountInput.addEventListener("input", updateSubtotals);
+  packingInput.addEventListener("input", updateSubtotals);
+  deliveryInput.addEventListener("input", updateSubtotals);
+  paidInput.addEventListener("input", () => {
+    updateSubtotals();
+    updateAdvanceSplit(parseFloat(paidInput.value));
+  });
+  customerSelect.addEventListener("change", () => {
+    updateAdvanceSplit(parseFloat(paidInput.value));
+    const adv = advanceMap[customerSelect.value] || 0;
+    advanceBalanceDiv.value = `৳ ${adv.toFixed(2)}`;
+  });
+
+  updateSubtotals();
+});
+</script>
+{% endblock %}

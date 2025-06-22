@@ -1,0 +1,42 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Return বিস্তারিত (ID: {{ return_record.id }})</h2>
+    <p><strong>Return Type:</strong> {{ return_record.get_return_type_display }}</p>
+    <p><strong>Reference ID:</strong> {{ return_record.reference_id }}</p>
+    <p><strong>Return Date:</strong> {{ return_record.date }}</p>
+    <p><strong>Reason:</strong> {{ return_record.reason }}</p>
+    <p><strong>Damaged:</strong> {% if return_record.is_damaged %}হ্যাঁ{% else %}না{% endif %}</p>
+    <p><strong>Note:</strong> {{ return_record.note }}</p>
+
+    <h4>Return Items</h4>
+    <table class="table table-bordered">
+        <thead class="table-secondary">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in return_record.items.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unit_price }}</td>
+                <td>{{ item.get_total }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">কোনো Item নেই</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total Amount: </strong> {{ return_record.get_total_amount }}</p>
+
+    <a href="{% url 'returns:return_list' %}" class="btn btn-secondary mt-3">ফিরে যান</a>
+</div>
+{% endblock %}

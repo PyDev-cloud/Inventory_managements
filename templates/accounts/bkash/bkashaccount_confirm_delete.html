@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>বিকাশ অ্যাকাউন্ট মুছুন</h2>
+    <p>তুমি কি নিশ্চিতভাবে "{{ object.name }}" ({{ object.number }}) অ্যাকাউন্টটি মুছতে চাও?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">হ্যাঁ, মুছে ফেলুন</button>
+        <a href="{% url 'accounts:bkashaccount_list' %}" class="btn btn-secondary">না, ফিরে যান</a>
+    </form>
+</div>
+{% endblock %}

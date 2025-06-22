@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>লেনদেন তালিকা</h2>
+    <a href="{% url 'accounts:transaction_create' %}" class="btn btn-primary mb-3">নতুন লেনদেন যোগ করুন</a>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>তারিখ</th>
+                <th>অ্যাকাউন্ট টাইপ</th>
+                <th>ব্যাংক অ্যাকাউন্ট</th>
+                <th>লেনদেনের ধরণ</th>
+                <th>টাকা</th>
+                <th>নোট</th>
+                <th>কর্ম</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.get_account_type_display }}</td>
+                <td>{% if transaction.bank_account %}{{ transaction.bank_account }}{% else %}N/A{% endif %}</td>
+                <td>{{ transaction.get_transaction_type_display }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.note|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'accounts:transaction_update' transaction.pk %}" class="btn btn-sm btn-warning">সম্পাদনা</a>
+                    <a href="{% url 'accounts:transaction_delete' transaction.pk %}" class="btn btn-sm btn-danger">মুছে ফেলুন</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">কোনো লেনদেন পাওয়া যায়নি।</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

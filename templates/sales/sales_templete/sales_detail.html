@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Sale Details</h4>
+      <small>Invoice: <strong>{{ sale.invoice_no }}</strong></small>
+    </div>
+    <div class="card-body">
+
+      <!-- Sale Info -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <p><strong>Customer:</strong> {{ sale.customer.name }}</p>
+          <p><strong>Date:</strong> {{ sale.date }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Payment Method:</strong> {{ sale.get_payment_method_display }}</p>
+          <p><strong>Note:</strong> {{ sale.note|default:"—" }}</p>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <h5 class="mb-3">Items Sold</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th class="text-end">Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in sale.items.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>৳ {{ item.unit_price|floatformat:2 }}</td>
+              <td class="text-end">৳ {{ item.subtotal|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No items found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary -->
+      <div class="row mt-4 justify-content-end">
+        <div class="col-md-6">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Total Amount:</strong> <span>৳ {{ sale.total_amount|floatformat:2 }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Paid:</strong> <span>৳ {{ sale.paid_amount|floatformat:2 }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Due:</strong> <span>৳ {{ sale.due_amount|floatformat:2 }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <a href="{% url 'sales:sale_list' %}" class="btn btn-secondary">Back to Sales List</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h4>Pay Due for Invoice #{{ purchase.id }}</h4>
+    <p><strong>Total:</strong> {{ purchase.total_amount }} | <strong>Paid:</strong> {{ purchase.paid_amount }} | <strong>Due:</strong> {{ purchase.due_amount }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+    </form>
+</div>
+{% endblock %}

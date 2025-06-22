@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+<div class="mt-4">
+    <h3 class="mb-4 text-center">Dashboard</h3>
+    <h4 class="mt-4 mb-3">📦 Inventory</h4>
+    <div class="row row-cols-1 row-cols-md-5 g-4">
+        <!-- Inventory -->
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Products</h5>
+                    <p class="card-text">{{ total_products }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Office Stock</h5>
+                    <p class="card-text">{{ total_office_stock }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Godawn Stock</h5>
+                    <p class="card-text">{{ total_godown_stock }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Damage</h5>
+                    <p class="card-text">{{ total_damage_stock }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">None</h5>
+                    <p class="card-text">0</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+        <h4 class="mt-5 mb-3">🛒 Purchases</h4>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+        <!-- Purchases -->
+        <div class="col">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Suppliers</h5>
+                    <p class="card-text">{{ total_suppliers }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Total Purchase </h5>
+                    <p class="card-text">{{ monthly_purchase_count }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Purchases Amount</h5>
+                    <p class="card-text">{{ monthly_purchase_total|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Payments</h5>
+                    <p class="card-text">{{ totalpayment|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Discount</h5>
+                    <p class="card-text">{{monthly_purchase_discount_total|floatformat:2}} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Due</h5>
+                    <p class="card-text">{{ monthly_purchase_due|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Advance</h5>
+                    <p class="card-text">{{ monthly_purchase_advance|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Return</h5>
+                    <p class="card-text">{{ purchase_return_count}} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Return Amount</h5>
+                    <p class="card-text">{{ purchase_return_total_amount|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">None</h5>
+                    <p class="card-text">{{ monthly_purchase_due|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        <h4 class="mt-5 mb-3">🛒 Sales</h4>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+        <!-- Sales -->
+        <div class="col">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Total Customer</h5>
+                    <p class="card-text">{{ total_customer }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Sales Count</h5>
+                    <p class="card-text">{{ monthly_sales_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Sales</h5>
+                    <p class="card-text">{{ monthly_sales_total|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Payments</h5>
+                    <p class="card-text">{{ totalsales_payment|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Discount</h5>
+                    <p class="card-text">{{monthly_discount_total|floatformat:2}}৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Due</h5>
+                    <p class="card-text">{{ monthly_sales_due|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Advance</h5>
+                    <p class="card-text">{{ monthly_sales_advance|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Sales Return </h5>
+                    <p class="card-text">{{ sale_return_count}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title"> Sales Return Amount</h5>
+                    <p class="card-text">{{ sale_return_total_amount|floatformat:2  }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">None</h5>
+                    <p class="card-text">0.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        
+        <h4 class="mt-5 mb-3">🛒 Expanse</h4>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+        <!-- Balances -->
+        <div class="col">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Total Employee</h5>
+                    <p class="card-text">{{total_employee }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Salary </h5>
+                    <p class="card-text">{{ salary_total|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Salary Paid</h5>
+                    <p class="card-text">{{ salary_paid|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Salary Unpaid</h5>
+                    <p class="card-text">{{ salary_due|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Expense Paid</h5>
+                    <p class="card-text">{{ expense_paid|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <h4 class="mt-5 mb-3">🛒 Accounts</h4>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+        <div class="col">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Cash Balance</h5>
+                    <p class="card-text">{{ cash_balance|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Bank Balance</h5>
+                    <p class="card-text">{{ bank_balance|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Bkash Balance</h5>
+                    <p class="card-text">{{ bkash_balance|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other -->
+        
+        
+        <div class="col">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Investment</h5>
+                    <p class="card-text">{{ invested|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Fund Transferred</h5>
+                    <p class="card-text">{{ fund_transferred|floatformat:2 }} ৳</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profit or Loss -->
+        <div class="col">
+            <div class="card text-white {% if profit_loss >= 0 %}bg-success{% else %}bg-danger{% endif %}">
+                <div class="card-body">
+                    <h5 class="card-title">Profit / Loss</h5>
+                    <p class="card-text">
+                        <p>Gross Profit: {{ gross_profit }}</p>
+                        <p>Net Profit: {{ net_profit }}</p>
+                        {% if is_profit %}
+                            <p class="text-info">You are in profit ✅</p>
+                        {% else %}
+                            <p class="text-info">You are in loss ❌</p>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <canvas id="monthlyChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    const monthlyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'Purchase', 'Purchase Payment', 'Sales', 'Sales Payment',
+                'Salary', 'Expense', 'Investment', 'Fund Transfer', 'Return'
+            ],
+            datasets: [{
+                label: 'Monthly Report (৳)',
+                data: [
+                    {{ monthly_purchase_total }},
+                    {{ monthly_purchase_payment_total }},
+                    {{ monthly_sales_total }},
+                    {{ monthly_sales_payment_total }},
+                    {{ salary_paid }},
+                    {{ expense_paid }},
+                    {{ invested }},
+                    {{ fund_transferred }},
+                    {{ monthly_return_amount }}
+                ],
+                backgroundColor: [
+                    '#007bff', '#6c757d', '#28a745', '#17a2b8',
+                    '#ffc107', '#fd7e14', '#20c997', '#6610f2', '#dc3545'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Monthly Financial Report (Bar Chart)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

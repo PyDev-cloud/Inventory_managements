@@ -1,0 +1,104 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<div class="py-2">
+  <h3 class="mb-4 text-center">Return তালিকা</h3>
+    <!-- Action Buttons -->
+  <div class="d-flex justify-content-center mb-4 gap-3">
+    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+      🔍 Show/Hide Filter
+    </button>
+    <a href="{% url 'returns:return_add' %}" class="btn btn-success">
+      ➕ নতুন Return
+    </a>
+  </div>
+  <!-- Filter Section -->
+  <div class="collapse mb-4 " id="filterCollapse">
+    <form method="get" class="row g-3">
+      <div class="col-md-2">
+        <select name="return_type" class="form-control">
+          <option value="">All Types</option>
+          <option value="purchase" {% if return_type == 'purchase' %}selected{% endif %}>Purchase</option>
+          <option value="sale" {% if return_type == 'sale' %}selected{% endif %}>Sale</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="is_damaged" class="form-control">
+          <option value="">All Status</option>
+          <option value="true" {% if is_damaged == 'true' %}selected{% endif %}>Damaged</option>
+          <option value="false" {% if is_damaged == 'false' %}selected{% endif %}>Not Damaged</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="text" name="reference_id" class="form-control" placeholder="Reference ID" value="{{ reference_id }}">
+      </div>
+      <div class="col-md-2">
+        <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+      </div>
+      <div class="col-md-2">
+        <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+      </div>
+      <div class="col-md-2">
+        <input type="text" name="product_name" class="form-control" placeholder="Product Name" value="{{ product_name }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'returns:return_list' %}" class="btn btn-secondary w-100">✖ Reset</a>
+      </div>
+    </form>
+  </div>
+
+  
+
+  <!-- Return List -->
+  {% if returns %}
+  <div class="accordion" id="returnAccordion">
+    {% for return in returns %}
+    <div class="accordion-item mb-3 shadow-sm border rounded">
+      <h2 class="accordion-header" id="heading{{ return.id }}">
+        <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ return.id }}" aria-expanded="false" aria-controls="collapse{{ return.id }}">
+          🔁 {{ return.get_return_type_display }} Return | Ref ID: {{ return.reference_id }} | তারিখ: {{ return.date }} | মোট: ৳{{ return.get_total_amount }}
+        </button>
+      </h2>
+      <div id="collapse{{ return.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ return.id }}" data-bs-parent="#returnAccordion">
+        <div class="accordion-body">
+          <div class="d-flex justify-content-end mb-2 gap-2">
+            <a href="{% url 'returns:return_detail' return.pk %}" class="btn btn-info btn-sm">বিস্তারিত</a>
+            <a href="{% url 'returns:return_edit' return.pk %}" class="btn btn-warning btn-sm">এডিট</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle mb-0">
+              <thead class="table-secondary">
+                <tr class="text-center text-nowrap">
+                  <th>পণ্য</th>
+                  <th>পরিমাণ</th>
+                  <th>একক মূল্য (৳)</th>
+                  <th>মোট (৳)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in return.items.all %}
+                <tr class="text-center">
+                  <td>{{ item.product.name }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unit_price }}</td>
+                  <td>{{ item.get_total }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center" role="alert">
+    কোনো Return পাওয়া যায়নি।
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

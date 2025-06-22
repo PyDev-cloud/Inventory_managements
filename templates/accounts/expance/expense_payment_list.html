@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mt-4">
+    <h3 class="mb-4 text-center">Expense Payments - {{ month_name }} {{ year }}</h3>
+
+    <!-- Filter Button -->
+    <div class="text-center mb-3 gap-3 flex-wrap">
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+            🔍 Show/Hide Filter
+        </button>
+        <a href="{% url 'accounts:payment_expanse' %}" class="btn btn-primary btn-rounded px-4">Payment Expense </a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="collapse mb-4" id="filterCollapse">
+        <form method="get" class="card card-body bg-light">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="month" class="form-label">Month</label>
+                    <select name="month" id="month" class="form-select">
+                        {% for m in months %}
+                            <option value="{{ m.0 }}" {% if m.0 == current_month %}selected{% endif %}>{{ m.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="year" class="form-label">Year</label>
+                    <select name="year" id="year" class="form-select">
+                        {% for y in year_range %}
+                            <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-50">Apply</button>
+                    <a href="{% url 'accounts:expense_payment_list' %}" class="btn btn-secondary w-50">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Payment Table -->
+    {% if payments %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Expense</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Note</th>
+                    <th>Payment Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ payment.expense }}</td>
+                    <td>৳{{ payment.amount }}</td>
+                    <td>{{ payment.get_transaction_account_display }}</td>
+                    <td>{{ payment.note }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center">No expense payments found for this month.</div>
+    {% endif %}
+</div>
+{% endblock %}

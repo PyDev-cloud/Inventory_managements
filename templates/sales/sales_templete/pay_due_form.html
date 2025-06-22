@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h4>Pay Due for Invoice #{{ sale.id }}</h4>
+    <p><strong>Customer:</strong> {{ sale.customer.name }}</p>
+    <p><strong>Total:</strong> {{ sale.total_amount }} |
+       <strong>Paid:</strong> {{ sale.paid_amount }} |
+       <strong>Due:</strong> {{ sale.due_amount }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+        <a href="{% url 'sales:sale_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

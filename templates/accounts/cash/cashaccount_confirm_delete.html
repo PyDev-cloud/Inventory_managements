@@ -1,0 +1,12 @@
+{% extends "../../base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>আপনি কি নিশ্চিতভাবে "{{ object.name }}" ক্যাশ অ্যাকাউন্ট মুছে ফেলতে চান?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">হ্যাঁ, ডিলিট করুন</button>
+        <a href="{% url 'accounts:cashaccount-list' %}" class="btn btn-secondary">না, ফিরুন</a>
+    </form>
+</div>
+{% endblock %}

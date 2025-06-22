@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">💸 Create New Withdrawal</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.amount.id_for_label }}" class="form-label fw-semibold">Amount</label>
+                                {{ form.amount|add_class:"form-control" }}
+                                {% if form.amount.errors %}
+                                    <div class="text-danger small mt-1">{{ form.amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.transaction_account.id_for_label }}" class="form-label fw-semibold">Transaction Account</label>
+                                {{ form.transaction_account|add_class:"form-control" }}
+                                {% if form.transaction_account.errors %}
+                                    <div class="text-danger small mt-1">{{ form.transaction_account.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.note.id_for_label }}" class="form-label fw-semibold">Note</label>
+                                {{ form.note|add_class:"form-control" }}
+                                {% if form.note.errors %}
+                                    <div class="text-danger small mt-1">{{ form.note.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-rounded px-5">
+                                ✅ Submit Withdrawal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

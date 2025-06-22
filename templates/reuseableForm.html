@@ -1,0 +1,25 @@
+{% comment %}
+Reusable form fields layout for two-column form inputs with labels, errors and bootstrap classes.
+Assumes form fields are passed in as "fields" context variable (list of field names).
+{% endcomment %}
+
+<div class="row mb-4">
+    {% for field_name in fields %}
+        <div class="col-md-6">
+            <label for="{{ form[field_name].id_for_label }}" class="form-label fw-semibold">
+                {{ form[field_name].label }}
+            </label>
+            {% if form[field_name].field.widget.input_type == "textarea" %}
+                {{ form[field_name]|add_class:"form-control" }}
+            {% else %}
+                {{ form[field_name]|add_class:"form-control" }}
+            {% endif %}
+            {% if form[field_name].errors %}
+                <div class="text-danger small mt-1">{{ form[field_name].errors.0 }}</div>
+            {% endif %}
+        </div>
+        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+</div><div class="row mb-4">
+        {% endif %}
+    {% endfor %}
+</div>

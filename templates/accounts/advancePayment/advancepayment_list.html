@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4 text-center">Advance Payments - {{ month_name }} {{ year }}</h3>
+
+    <!-- 🔍 Collapsible Filter Button -->
+    <div class="d-flex justify-content-center mb-3">
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+            🔍 Show/Hide Filters
+        </button>
+    </div>
+
+    <!-- 🔍 Filter Form -->
+    <div class="collapse mb-4" id="filterCollapse">
+        <form method="get" class="card card-body bg-light">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label for="month" class="form-label">Month</label>
+                    <select name="month" id="month" class="form-select">
+                        {% for m in months %}
+                            <option value="{{ m.0 }}" {% if m.0 == current_month %}selected{% endif %}>{{ m.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="year" class="form-label">Year</label>
+                    <select name="year" id="year" class="form-select">
+                        {% for y in year_range %}
+                            <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="supplier" class="form-label">Supplier</label>
+                    <select name="supplier" id="supplier" class="form-select">
+                        <option value="">-- All --</option>
+                        {% for sup in suppliers %}
+                            <option value="{{ sup.id }}" {% if sup.id|stringformat:"s" == selected_supplier %}selected{% endif %}>
+                                {{ sup.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="customer" class="form-label">Customer</label>
+                    <select name="customer" id="customer" class="form-select">
+                        <option value="">-- All --</option>
+                        {% for cus in customers %}
+                            <option value="{{ cus.id }}" {% if cus.id|stringformat:"s" == selected_customer %}selected{% endif %}>
+                                {{ cus.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="method" class="form-label">Method</label>
+                    <select name="method" id="method" class="form-select">
+                        <option value="">-- All --</option>
+                        {% for code, label in methods %}
+                            <option value="{{ code }}" {% if code == selected_method %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary w-50">Apply</button>
+                    <a href="{% url 'accounts:advance_payment_list' %}" class="btn btn-secondary w-50">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 💰 Payment Table -->
+    {% if payments %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>For</th>
+                    <th>Supplier</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Payment Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ payment.payment_for }}</td>
+                    <td>
+                            {% if payment.supplier %}
+                                {{ payment.supplier.name }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if payment.customer %}
+                                {{ payment.customer.name }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    <td>৳{{ payment.amount }}</td>
+                    <td>{{ payment.get_method_display }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center mt-4">No advance payments found for this filter.</div>
+    {% endif %}
+</div>
+{% endblock %}

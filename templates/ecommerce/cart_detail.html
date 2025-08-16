@@ -1,0 +1,89 @@
+{% extends "ecommerce/base.html" %}
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">🛒 Your Cart</h2>
+
+    {% if cart_items %}
+    <div class="alert alert-success">
+        <strong>“{{ cart_items.0.item.product.product.name }}”</strong> has been added to your cart.
+        <a href="{% url 'ecommerce:product_list' %}" class="btn btn-sm btn-outline-primary ms-2">Continue Shopping</a>
+    </div>
+
+    <form method="post" action="{% url 'ecommerce:cart_detail' %}">
+        {% csrf_token %}
+        <table class="table align-middle table-bordered text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Remove</th>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th style="width: 150px;">Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in cart_items %}
+                <tr>
+                    <td>
+                        <a href="{% url 'ecommerce:remove_from_cart' entry.item.id %}" class="btn btn-sm btn-danger">×</a>
+                    </td>
+                    <td>
+                        <img src="{{ entry.item.product.image.url }}" alt="{{ entry.item.product.product.name }}"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                    </td>
+                    <td>{{ entry.item.product.product.name }}</td>
+                    <td>{{ entry.item.product.purchase_price }}৳</td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <a href="{% url 'ecommerce:decrease_qty' entry.item.id %}" class="btn btn-outline-secondary">−</a>
+                            <input type="text" name="quantity_{{ entry.item.id }}" value="{{ entry.item.quantity }}" class="form-control text-center">
+                            <a href="{% url 'ecommerce:increase_qty' entry.item.id %}" class="btn btn-outline-secondary">+</a>
+                        </div>
+                    </td>
+                    <td>{{ entry.subtotal|floatformat:2 }}৳</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-start mt-4 flex-wrap">
+
+            <!-- Coupon -->
+            <div class="mb-3">
+                <label for="coupon" class="form-label">Coupon code</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="coupon" name="coupon_code" placeholder="Enter coupon">
+                    <button class="btn btn-outline-primary" type="submit" name="apply_coupon">Apply coupon</button>
+                </div>
+            </div>
+
+            <!-- Cart Totals -->
+            <div class="card" style="min-width: 300px;">
+                <div class="card-body">
+                    <h5 class="card-title">Cart totals</h5>
+                    <p class="mb-1">Subtotal: <strong>{{ total|floatformat:2 }}৳</strong></p>
+                    <p class="mb-1">Shipping:
+                        <br>
+                        <small class="text-muted">Inside Dhaka: 60.00৳</small><br>
+                        <small class="text-muted">Outside Dhaka: 110.00৳</small>
+                    </p>
+                    <p class="mb-1">Shipping to <strong>Dhaka</strong>. <a href="#">Change address</a></p>
+                    <hr>
+                    <p>Total: <strong>{{ total|add:60|floatformat:2 }}৳</strong></p>
+                    <a href="{% url 'ecommerce:checkout' %}" class="btn btn-success w-100">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% else %}
+    <div class="alert alert-info">
+        <p>Your cart is currently empty.</p>
+        <a href="{% url 'ecommerce:product_list' %}" class="btn btn-primary mt-2">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

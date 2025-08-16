@@ -1,0 +1,21 @@
+{% extends "../../../base.html" %}
+{% block title %}Category Create{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Subcategories</h2>
+    <a href="{% url 'inventory:subcategory-add' %}" class="btn btn-success mb-3">Add Subcategory</a>
+    <ul class="list-group">
+        {% for sub in subcategories %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ sub.name }} <small class="text-muted">({{ sub.category.name }})</small>
+                <span>
+                    <a href="{% url 'inventory:subcategory-edit' sub.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'inventory:subcategory-delete' sub.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No subcategories found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

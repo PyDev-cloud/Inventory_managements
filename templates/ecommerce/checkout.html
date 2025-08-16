@@ -1,0 +1,104 @@
+{% extends "ecommerce/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">🧾 Checkout</h2>
+
+    <div class="row">
+        <!-- Billing Details -->
+        <div class="col-md-7">
+            <h4 class="mb-3">Billing details</h4>
+            <form method="post" action="{% url 'ecommerce:checkout' %}">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">First name *</label>
+                    <input type="text" name="first_name" id="first_name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Last name (optional)</label>
+                    <input type="text" name="last_name" id="last_name" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address *</label>
+                    <input type="text" name="address" id="address" class="form-control" placeholder="House number and street name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone *</label>
+                    <input type="tel" name="phone" id="phone" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address (optional)</label>
+                    <input type="email" name="email" id="email" class="form-control">
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" name="ship_to_different" class="form-check-input" id="ship_to_different">
+                    <label class="form-check-label" for="ship_to_different">Ship to a different address?</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="order_notes" class="form-label">Order notes (optional)</label>
+                    <textarea name="order_notes" id="order_notes" class="form-control" rows="3" placeholder="Notes about your order, e.g. special delivery instructions."></textarea>
+                </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-md-5">
+            <h4 class="mb-3">Your order</h4>
+            <ul class="list-group mb-3">
+                {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">{{ item.product.product.name }} × {{ item.quantity }}</h6>
+                    </div>
+                    <span class="text-muted">{{ item.subtotal|floatformat:2 }}৳</span>
+                </li>
+                {% endfor %}
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Subtotal</span>
+                    <strong>{{ subtotal|floatformat:2 }}৳</strong>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="shipping_option" id="inside_dhaka" value="inside" checked>
+                        <label class="form-check-label" for="inside_dhaka">Inside Dhaka (60.00৳)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="shipping_option" id="outside_dhaka" value="outside">
+                        <label class="form-check-label" for="outside_dhaka">Outside Dhaka (110.00৳)</label>
+                    </div>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total</span>
+                    <strong>{{ total|floatformat:2 }}৳</strong>
+                </li>
+            </ul>
+
+            <!-- Payment Method -->
+            <h5 class="mb-3">Payment method</h5>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
+                <label class="form-check-label" for="cod">
+                    Cash on delivery — Pay with cash upon delivery.
+                </label>
+            </div>
+
+            <p class="small text-muted">
+                Your personal data will be used to process your order and support your experience on this website.
+            </p>
+
+            <button type="submit" class="btn btn-success w-100">Place order</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

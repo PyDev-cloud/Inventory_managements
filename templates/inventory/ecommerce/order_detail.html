@@ -1,0 +1,41 @@
+{% extends "../../base.html" %}
+{% block title %}Order Detail{% endblock %}
+{% block content %}
+<h2>Order #{{ order.id }}</h2>
+<p><strong>Customer:</strong> {{ order.customer.user.username }}</p>
+<p><strong>Status:</strong> {{ order.status }}</p>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.order_items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="status">Update Status:</label>
+    {% with order.status as current_status %}
+<select name="status" class="form-select w-25 d-inline-block">
+  {% for status_option in status_list %}
+    <option value="{{ status_option }}" {% if status_option == current_status %}selected{% endif %}>
+      {{ status_option|title }}
+    </option>
+  {% endfor %}
+</select>
+{% endwith %}
+    <button type="submit" class="btn btn-success ms-2">Update</button>
+</form>
+{% endblock %}

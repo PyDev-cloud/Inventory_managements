@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Supplier, Product, Purchase, PurchaseItem, PurchasePayment
 from accounts.models import BankAccount,CashAccount,BkashAccount
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView,DeleteView
 from django.urls import reverse_lazy
 from .forms import PurchaseForm, PurchaseItemFormSet,SupplierForm,ProductForm,DuePaymentForm,StockTransferForm
 from django.db import transaction
@@ -345,3 +345,195 @@ class TransferStockView(View):
                 messages.error(request, "Not enough stock in godown.")
             return redirect('inventory:transfer_stock')
         return render(request, 'inventory/transfer_stock.html', {'form': form})
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #ecommarch Admin funcionalaty
+
+
+
+    from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views import View
+from ecommerce.models import ProductCategoryLink, Order, CustomerUser,Category,SubCategory
+from .forms import ProductForm  # Product add/edit ফর্ম তৈরি করতে হবে
+from ecommerce.forms import ProductCategoryLinkForm
+
+
+
+
+# Category Views
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'inventory/ecommerce/category/category_list.html'
+    context_object_name = 'categories'
+
+
+class CategoryCreateView(CreateView):
+    model = Category
+    fields = ['name', 'slug']
+    template_name = 'inventory/ecommerce/category/category_form.html'
+    success_url = reverse_lazy('inventory:category-list')
+
+
+class CategoryUpdateView(UpdateView):
+    model = Category
+    fields = ['name', 'slug']
+    template_name = 'inventory/ecommerce/category/category_form.html'
+    success_url = reverse_lazy('inventory:category-list')
+
+
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'inventory/ecommerce/category/category_confirm_delete.html'
+    success_url = reverse_lazy('inventory:category-list')
+
+
+# SubCategory Views
+class SubCategoryListView(ListView):
+    model = SubCategory
+    template_name = 'inventory/ecommerce/subcategory/subcategory_list.html'
+    context_object_name = 'subcategories'
+
+
+class SubCategoryCreateView(CreateView):
+    model = SubCategory
+    fields = ['category', 'name', 'slug']
+    template_name = 'inventory/ecommerce/subcategory/subcategory_form.html'
+    success_url = reverse_lazy('inventory:subcategory-list')
+
+
+class SubCategoryUpdateView(UpdateView):
+    model = SubCategory
+    fields = ['category', 'name', 'slug']
+    template_name = 'inventory/ecommerce/subcategory/subcategory_form.html'
+    success_url = reverse_lazy('inventory:subcategory-list')
+
+
+class SubCategoryDeleteView(DeleteView):
+    model = SubCategory
+    template_name = 'inventory/ecommerce/subcategory/subcategory_confirm_delete.html'
+    success_url = reverse_lazy('inventory:subcategory-list')
+
+
+
+
+
+# Decorator to ensure only staff/admin can access
+def admin_required(view_func):
+    decorated_view_func = login_required(view_func)
+    return decorated_view_func
+
+# Dashboard
+#@admin_required
+def dashboard(request):
+    total_products = Product.objects.count()
+    total_orders = Order.objects.count()
+    pending_orders = Order.objects.filter(status='pending').count()
+    low_stock_products = Product.objects.filter(current_stock__lte=5).count()
+
+    # Example sales data for graph
+    orders_last_7_days = Order.objects.order_by('created_at').values_list('created_at', 'total_price')
+    sales_labels = [o[0].strftime("%Y-%m-%d") for o in orders_last_7_days]
+    sales_data = [o[1] for o in orders_last_7_days]
+
+    context = {
+        'total_products': total_products,
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'low_stock_products': low_stock_products,
+        'sales_labels': sales_labels,
+        'sales_data': sales_data,
+    }
+    return render(request, 'inventory/dashboard.html', context)
+
+# Product list
+#@admin_required
+def products(request):
+    products = ProductCategoryLink.objects.all()
+    return render(request, 'inventory/ecommerce/products.html', {'products': products})
+
+# Add product
+#@admin_required
+def product_add(request):
+    if request.method == 'POST':
+        form = ProductCategoryLinkForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory:products_ecommerch')  # success redirect
+    else:
+        form = ProductCategoryLinkForm()
+    
+    
+    return render(request, 'inventory/ecommerce/product_form.html', {'form': form, 'form_title': 'Add Product'})
+
+# Edit product
+#@admin_required
+def product_edit(request, pk):
+    product_link = get_object_or_404(ProductCategoryLink, pk=pk)
+
+    if request.method == 'POST':
+        form = ProductCategoryLinkForm(request.POST, request.FILES, instance=product_link)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory:products_ecommerch')
+    else:
+        form = ProductCategoryLinkForm(instance=product_link)
+
+    return render(request, 'inventory/ecommerce/product_form.html', {
+        'form': form,
+        'form_title': 'Edit Product'
+    })
+
+# Delete product
+#@admin_required
+def product_delete(request, pk):
+    product = get_object_or_404(ProductCategoryLink, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('inventory:products_ecommerch')
+    return render(request, 'inventory/ecommerce/product_confirm_delete.html', {'form': None, 'form_title': 'Confirm Delete Product'})
+
+# Order list
+#@admin_required
+def orders(request):
+    orders = Order.objects.all().order_by('-created_at')
+    return render(request, 'inventory/ecommerce/orders.html', {'orders': orders})
+
+# Order detail
+#@admin_required
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        if status:
+            order.status = status
+            order.save()
+            return redirect('inventory:order_detail', pk=order.pk)
+    return render(request, 'inventory/ecommerce/order_detail.html', {'order': order})
+
+# Customers list
+#@admin_required
+def customers(request):
+    customers = CustomerUser.objects.all()
+    return render(request, 'inventory/ecommerce/customers.html', {'customers': customers})

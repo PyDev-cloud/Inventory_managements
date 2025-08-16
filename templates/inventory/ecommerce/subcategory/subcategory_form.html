@@ -1,0 +1,25 @@
+{% extends "../../../base.html" %}
+{% load widget_tweaks %}
+{% block title %}Category Create{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Subcategory</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_category" class="form-label">Category</label>
+            {{ form.category|add_class:"form-select" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_name" class="form-label">Name</label>
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_slug" class="form-label">Slug</label>
+            {{ form.slug|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'inventory:subcategory-list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

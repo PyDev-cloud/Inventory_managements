@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <!-- Left: Brand -->
+        <a class="navbar-brand" href="{% url 'ecommerce:product_list' %}">
+            <img style="height:50px" src="{% static 'img/DUIBD.png' %}"/>
+        </a>
+
+        <!-- Toggler for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Center & Right content -->
+        <div class="collapse navbar-collapse" id="navbarNav" style="width: 100%;">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'ecommerce:product_list' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'ecommerce:cart_detail' %}">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

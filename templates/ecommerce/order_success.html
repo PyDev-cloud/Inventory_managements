@@ -1,0 +1,9 @@
+{% extends "ecommerce/base.html" %}
+{% block title %}Order Success{% endblock %}
+{% block content %}
+<div class="alert alert-success">
+    <h4>Thank you!</h4>
+    <p>Your order #{{ order.id }} has been placed successfully.</p>
+</div>
+<a href="{% url 'ecommerce:product_list' %}" class="btn btn-primary">Continue Shopping</a>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "ecommerce/base.html" %}
+
+{% block title %}{{ product.product.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Product Detail -->
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <img src="{{ product.image.url }}" alt="{{ product.product.name }}"
+                 class="img-fluid rounded shadow" style="max-height: 400px; object-fit: contain;">
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-primary">{{ product.product.name }}</h2>
+
+            {% if product.previous_price %}
+                <p class="fs-5">
+                    <del class="text-muted">৳{{ product.previous_price }}</del>
+                    <span class="text-success fw-bold ms-2">৳{{ product.selles_price }}</span>
+                </p>
+            {% else %}
+                <p class="fs-4 text-success fw-bold">৳{{ product.selles_price }}</p>
+            {% endif %}
+
+            <p class="text-muted mt-3">{{ product.description }}</p>
+
+            <p class="mt-2">
+                <span class="badge bg-secondary">{{ product.category.name }}</span>
+                {% if product.subcategory %}
+                    <span class="badge bg-info text-dark">{{ product.subcategory.name }}</span>
+                {% endif %}
+            </p>
+
+            <form action="{% url 'ecommerce:add_to_cart' product.pk %}" method="post" class="d-flex gap-2 mt-4">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1" class="form-control w-25">
+                <button type="submit" class="btn btn-success">Add to Cart</button>
+                <a href="#" class="btn btn-warning">Order Now</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <hr class="my-5">
+    <h4 class="mb-4">Related Products</h4>
+    <div class="row">
+        {% for related in related_products %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <a href="{% url 'ecommerce:product_detail' related.pk %}">
+                        <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.product.name }}"
+                             style="height: 200px; object-fit: cover;">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ related.product.name|truncatechars:30 }}</h6>
+                        <p class="text-success fw-bold">৳{{ related.selles_price }}</p>
+                        <a href="{% url 'ecommerce:product_detail' related.pk %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No related products found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Reviews Section -->
+    <hr class="my-5">
+    <h4 class="mb-3">Customer Reviews</h4>
+    <div class="mb-4">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="border rounded p-3 mb-3">
+                    <strong>{{ review.user.username }}</strong> <span class="text-muted">– {{ review.created_at|date:"F j, Y" }}</span>
+                    <p class="mb-1">{{ review.comment }}</p>
+                    <small class="text-warning">★ {{ review.rating }} / 5</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No reviews yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

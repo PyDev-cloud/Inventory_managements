@@ -1,0 +1,36 @@
+{% extends "../../base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Products</h2>
+    <a href="{% url 'inventory:products_ecommerch_add' %}" class="btn btn-success">Add Product</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Subcategories</th>
+            <th>previous_price</th>
+            <th>selles_price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.subcategory }}</td>
+            <td>{{ product.previous_price}}</td>
+            <td>{{ product.selles_price}}</td>
+            <td>
+                <a href="{% url 'inventory:products_ecommerch_edit' product.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                <a href="{% url 'inventory:products_ecommerch_delete' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "../../base.html" %}
+{% block title %}Add/Edit Product{% endblock %}
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add Product Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_product" class="form-label">Product</label>
+                                {{ form.product }}
+                                {% if form.product.errors %}
+                                    <div class="text-danger">{{ form.product.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_category" class="form-label">Category</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_subcategory" class="form-label">Subcategory</label>
+                                {{ form.subcategory }}
+                                {% if form.subcategory.errors %}
+                                    <div class="text-danger">{{ form.subcategory.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_image" class="form-label">Product Image</label>
+                                {{ form.image }}
+                                {% if form.image.errors %}
+                                    <div class="text-danger">{{ form.image.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="id_description" class="form-label">Description</label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div class="text-danger">{{ form.description.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_previous_price" class="form-label">Previous Price</label>
+                                {{ form.previous_price }}
+                                {% if form.previous_price.errors %}
+                                    <div class="text-danger">{{ form.previous_price.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_selles_price" class="form-label">Selling Price</label>
+                                {{ form.selles_price }}
+                                {% if form.selles_price.errors %}
+                                    <div class="text-danger">{{ form.selles_price.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success w-100">Save Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

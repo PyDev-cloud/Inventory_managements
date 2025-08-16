@@ -1,0 +1,28 @@
+{% extends "../../base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow border-danger">
+        <div class="card-body text-center">
+            <h3 class="text-danger">Confirm Delete</h3>
+            <p class="lead">Are you sure you want to delete the product:</p>
+
+            <h4 class="text-dark">
+                "{{ product.product.name }}"
+            </h4>
+
+            {% if product.image %}
+                <div class="my-3">
+                    <img src="{{ product.image.url }}" class="img-fluid rounded shadow-sm" style="max-height: 150px;">
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger me-2">Yes, Delete</button>
+                <a href="{% url 'inventory:products_ecommerch' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

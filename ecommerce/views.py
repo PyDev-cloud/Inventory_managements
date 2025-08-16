@@ -35,17 +35,29 @@ class AddToCartView(View):
         except Exception as e:
             return HttpResponse(f"❌ GET Error: {str(e)}")
 
-    def post(self, request, product_id):
-        """Standard add to cart via POST (form submit)"""
+    def post(self, request, pk):
         try:
-            product = get_object_or_404(ProductCategoryLink, id=product_id)
+            product = get_object_or_404(ProductCategoryLink, id=pk)
             quantity = int(request.POST.get("quantity", 1))
             return self.handle_add_to_cart(request, product, quantity)
         except Exception as e:
             return HttpResponse(f"❌ POST Error: {str(e)}")
 
+    from inventory.models import Product  # ensure this import exists
+
     def handle_add_to_cart(self, request, product, quantity):
-        """Handles cart retrieval and item adding logic"""
+        """Handles cart retrieval and item adding logic with stock check (for both login and guest)"""
+
+        # ✅ Step 1: Check stock from Product model
+        available_stock = product.product.current_stock
+        
+
+        if quantity > available_stock:
+            messages.warning(request, f"❌ Only {available_stock} item(s) available in stock.")
+            print("Quantity empty")
+            return redirect("ecommerce:product_detail", pk=product.pk)
+
+        # ✅ Step 2: Get or create cart
         if request.user.is_authenticated:
             customer, _ = CustomerUser.objects.get_or_create(user=request.user)
             cart, _ = Cart.objects.get_or_create(customer=customer)
@@ -60,7 +72,7 @@ class AddToCartView(View):
                 cart = Cart.objects.create()
                 request.session["guest_cart_id"] = cart.id
 
-        # Add or update cart item
+        # ✅ Step 3: Add or update cart item
         cart_item, created = CartItem.objects.get_or_create(
             cart=cart,
             product=product,
@@ -68,12 +80,19 @@ class AddToCartView(View):
         )
 
         if not created:
-            cart_item.quantity += quantity
+            new_quantity = cart_item.quantity + quantity
+            if new_quantity > available_stock:
+                messages.warning(
+                    request,
+                    f"⚠️ You already have {cart_item.quantity} in your cart. Only {available_stock} item(s) in stock."
+                )
+                return redirect("ecommerce:cart_detail")
+            cart_item.quantity = new_quantity
             cart_item.save()
 
         messages.success(request, "✅ Product added to cart.")
-        return redirect("ecommerce:cart_detail")  # Replace with actual cart page route
-    
+        return redirect("ecommerce:cart_detail")
+        
 
 # কার্টের বিস্তারিত
 
@@ -90,11 +109,17 @@ class RemoveFromCartView(View):
 class IncreaseQuantityView(View):
     def get(self, request, item_id):
         cart_item = get_object_or_404(CartItem, id=item_id)
+        product = cart_item.product.product  # Assuming product is FK to inventory.models.Product
+        
+        if cart_item.quantity + 1 > product.current_stock:
+            messages.error(request, f"Not available Stock {product.name} ")
+            
+            return redirect('ecommerce:cart_detail')
+        
         cart_item.quantity += 1
         cart_item.save()
-        messages.success(request, f"Quantity increased for {cart_item.product.product.name}.")
+        messages.success(request, f"Quantity increased for {product.name}.")
         return redirect('ecommerce:cart_detail')
-
 
 class DecreaseQuantityView(View):
     def get(self, request, item_id):
@@ -121,7 +146,7 @@ class CartDetailView(View):
             except:
                 cart = None
         else:
-            cart_id = request.session.get('cart_id')
+            cart_id = request.session.get('guest_cart_id')  # ✅ এখানে ঠিক করা হয়েছে
             if cart_id:
                 cart = Cart.objects.filter(id=cart_id, customer__isnull=True).first()
 
@@ -131,7 +156,7 @@ class CartDetailView(View):
         items_with_subtotal = []
         total = 0
         for item in cart_items:
-            price = item.product.selles_price  # Adjust if field name is different
+            price = item.product.selles_price  # নিশ্চিত হন এই ফিল্ড মডেলে আছে
             subtotal = price * item.quantity
             total += subtotal
             items_with_subtotal.append({
@@ -143,7 +168,6 @@ class CartDetailView(View):
             'cart_items': items_with_subtotal,
             'total': total
         })
-
 
 # চেকআউট ও অর্ডার তৈরি
 
@@ -227,7 +251,7 @@ class CheckoutView(View):
             shipping_address=address,
             payment_method=payment_method,
         )
-
+        
         # Create OrderItems
         for item in cart_items:
             OrderItem.objects.create(
@@ -236,6 +260,8 @@ class CheckoutView(View):
                 quantity=item.quantity,
                 price=item.product.selles_price,
             )
+
+        
 
         # Create ShippingInfo
         ShippingInfo.objects.create(
@@ -259,7 +285,7 @@ class CheckoutView(View):
         cart.items.all().delete()
 
         messages.success(request, "✅ Order placed successfully!")
-        return redirect("ecommerce:order_success")  # Create this template/page
+        return redirect("ecommerce:order_success", pk=order.pk)  # Create this template/page
 
 # অর্ডার সফল পেজ
 class OrderSuccessView(DetailView):

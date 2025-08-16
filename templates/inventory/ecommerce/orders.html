@@ -22,6 +22,11 @@
             <td>{{ order.status }}</td>
             <td>{{ order.created_at }}</td>
             <td>
+                {% if order.status == 'confirmed' %}
+                <a href="{% url 'inventory:order_detail' order.pk %}" class="btn btn-info btn-sm">Invoice</a>
+                
+                {% else %}
+                {% endif %}
                 <a href="{% url 'inventory:order_detail' order.pk %}" class="btn btn-info btn-sm">View</a>
             </td>
         </tr>

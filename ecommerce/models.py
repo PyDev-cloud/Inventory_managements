@@ -75,7 +75,9 @@ class Order(models.Model):
     shipping_address = models.TextField(blank=True, null=True)  # Add this
     payment_method = models.CharField(max_length=20, blank=True, null=True)  # Add this
     created_at = models.DateTimeField(auto_now_add=True)
+    stock_deducted = models.BooleanField(default=False)  
 
+    
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')

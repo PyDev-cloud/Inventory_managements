@@ -524,13 +524,15 @@ def orders(request):
 #@admin_required
 def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    status_list = [choice[0] for choice in Order.STATUS_CHOICES]  # 
+
     if request.method == 'POST':
         status = request.POST.get('status')
         if status:
             order.status = status
             order.save()
-            return redirect('inventory:order_detail', pk=order.pk)
-    return render(request, 'inventory/ecommerce/order_detail.html', {'order': order})
+            return redirect('inventory:orders')
+    return render(request, 'inventory/ecommerce/order_detail.html', {'order': order,'status_list': status_list})
 
 # Customers list
 #@admin_required

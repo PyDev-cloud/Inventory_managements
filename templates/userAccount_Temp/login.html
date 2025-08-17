@@ -1,0 +1,39 @@
+{% extends "../ecommerce/base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container py-5" style="max-width: 450px;">
+  <h3 class="mb-4 text-center">Login to Your Account</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      {{ form.username.label_tag }}
+      {{ form.username|add_class:"form-control" }}
+      {% for error in form.username.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="mb-3">
+      {{ form.password.label_tag }}
+      {{ form.password|add_class:"form-control" }}
+      {% for error in form.password.errors %}
+        <div class="text-danger small">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Login</button>
+  </form>
+
+  <p class="text-center mt-3">Don't have an account?
+    <a href="{% url 'user:register' %}" class="text-decoration-none">Register here</a>
+  </p>
+</div>
+{% endblock %}

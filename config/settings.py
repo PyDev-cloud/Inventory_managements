@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'ecommerce',
     'dashboard',
     'widget_tweaks',
+    'userAccount',
 
 
 ]
@@ -125,6 +126,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+# Custom user model
+AUTH_USER_MODEL = 'userAccount.User'
+LOGIN_URL = '/user/login/'
 
 
 # Static files (CSS, JavaScript, Images)

@@ -9,9 +9,10 @@ from .models import Return, ReturnItem
 from .forms import ReturnForm, ReturnItemFormSet
 from inventory.models import Product, PurchaseItem,Purchase
 from sales.models import SaleItem,Sale, SaleItem
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Return List
-class ReturnListView(ListView):
+class ReturnListView(LoginRequiredMixin,ListView):
     model = Return
     template_name = 'returns/return_list.html'
     context_object_name = 'returns'
@@ -54,13 +55,13 @@ class ReturnListView(ListView):
         return context
 
 # Return Details
-class ReturnDetailView(DetailView):
+class ReturnDetailView(LoginRequiredMixin,DetailView):
     model = Return
     template_name = 'returns/return_detail.html'
     context_object_name = 'return_record'
 
 # Return Creation
-class ReturnCreateView(CreateView):
+class ReturnCreateView(LoginRequiredMixin,CreateView):
     model = Return
     form_class = ReturnForm
     template_name = 'returns/return_form.html'
@@ -115,7 +116,7 @@ class ReturnCreateView(CreateView):
         return super().form_valid(form)
 
 # Return Update
-class ReturnUpdateView(UpdateView):
+class ReturnUpdateView(LoginRequiredMixin,UpdateView):
     model = Return
     form_class = ReturnForm
     template_name = 'returns/return_form.html'

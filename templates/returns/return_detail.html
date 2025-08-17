@@ -1,6 +1,11 @@
 {% extends "../base.html" %}
 
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>Return বিস্তারিত (ID: {{ return_record.id }})</h2>
     <p><strong>Return Type:</strong> {{ return_record.get_return_type_display }}</p>

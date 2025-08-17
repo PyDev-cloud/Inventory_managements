@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-5">
   <h3>Confirm Delete</h3>
   <p>Are you sure you want to delete this expense: <strong>{{ object.description }}</strong>?</p>

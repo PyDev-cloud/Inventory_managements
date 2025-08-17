@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>লেনদেন মুছে ফেলুন</h2>
     <p>আপনি কি নিশ্চিতভাবে <strong>{{ object }}</strong> লেনদেনটি মুছে ফেলতে চান?</p>

@@ -130,7 +130,9 @@ USE_TZ = True
 
 # Custom user model
 AUTH_USER_MODEL = 'userAccount.User'
-LOGIN_URL = '/user/login/'
+from django.urls import reverse_lazy
+
+LOGIN_URL = reverse_lazy('user:login')
 
 
 # Static files (CSS, JavaScript, Images)

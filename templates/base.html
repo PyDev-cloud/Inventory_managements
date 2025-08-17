@@ -60,6 +60,20 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
+                            {% if user.is_superuser %}
+                            <div class="sb-sidenav-menu-heading">User Role</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                User Management
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseUser" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{% url 'user:manage_users' %}">Change Role</a>
+                                    <a class="nav-link" href="{% url 'user:manage_permissions' %}">Manage Permissions</a>
+                                </nav>
+                            </div>
+                        {% endif %}
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="{% url "dashboard" %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -73,8 +87,8 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "inventory:supplier-list" %}">Suppliers List</a>
-                                    <a class="nav-link" href="{% url "inventory:supplier_create" %}">Supplier Create</a>
+                                    <a class="nav-link" href="{% url 'inventory:supplier-list' %}">Suppliers List</a>
+                                    <a class="nav-link" href="{% url 'inventory:supplier_create' %}">Supplier Create</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -84,9 +98,9 @@
                             </a>
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "inventory:product-list" %}">Products List</a>
-                                    <a class="nav-link" href="{% url "inventory:product_create" %}">Products Create</a>
-                                    <a class="nav-link" href="{% url "inventory:transfer_stock" %}">Stock Transfer</a>
+                                    <a class="nav-link" href="{% url 'inventory:product-list' %}">Products List</a>
+                                    <a class="nav-link" href="{% url 'inventory:product_create' %}">Products Create</a>
+                                    <a class="nav-link" href="{% url 'inventory:transfer_stock' %}">Stock Transfer</a>
 
                                     
                                 </nav>
@@ -98,8 +112,8 @@
                             </a>
                             <div class="collapse" id="collapsePurchase" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "inventory:purchase_list" %}">Purchase List</a>
-                                    <a class="nav-link" href="{% url "inventory:purchase_create" %}">Purchase Create</a>
+                                    <a class="nav-link" href="{% url 'inventory:purchase_list' %}">Purchase List</a>
+                                    <a class="nav-link" href="{% url 'inventory:purchase_create' %}">Purchase Create</a>
                                 </nav>
                             </div>
 
@@ -112,8 +126,8 @@
                             </a>
                             <div class="collapse" id="collapsecustomer" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "sales:customer_list" %}">Customer List</a>
-                                    <a class="nav-link" href="{% url "sales:customer_create" %}">Customer Create</a>
+                                    <a class="nav-link" href="{% url 'sales:customer_list' %}">Customer List</a>
+                                    <a class="nav-link" href="{% url 'sales:customer_create' %}">Customer Create</a>
                                 </nav>
                             </div>
 
@@ -124,8 +138,8 @@
                             </a>
                             <div class="collapse" id="collapsesales" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "sales:sale_list" %}">Sales List</a>
-                                    <a class="nav-link" href="{% url "sales:sale_create" %}">Sales Create</a>
+                                    <a class="nav-link" href="{% url 'sales:sale_list' %}">Sales List</a>
+                                    <a class="nav-link" href="{% url 'sales:sale_create' %}">Sales Create</a>
                                 </nav>
                             </div>
 
@@ -138,8 +152,8 @@
                             </a>
                             <div class="collapse" id="collapsereturns" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "returns:return_list" %}">Returns List</a>
-                                    <a class="nav-link" href="{% url "returns:return_add" %}">Returns Create</a>
+                                    <a class="nav-link" href="{% url 'returns:return_list' %}">Returns List</a>
+                                    <a class="nav-link" href="{% url 'returns:return_add' %}">Returns Create</a>
                                 </nav>
                             </div>
 
@@ -153,9 +167,9 @@
                             </a>
                             <div class="collapse" id="collapseAccounts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "accounts:bankaccount_list" %}">Bank Accounts</a>
-                                    <a class="nav-link" href="{% url "accounts:bkashaccount_list" %}">Bkash </a>
-                                    <a class="nav-link" href="{% url "accounts:cashaccount-list" %}">Cash </a>
+                                    <a class="nav-link" href="{% url 'accounts:bankaccount_list' %}">Bank Accounts</a>
+                                    <a class="nav-link" href="{% url 'accounts:bkashaccount_list' %}">Bkash </a>
+                                    <a class="nav-link" href="{% url 'accounts:cashaccount-list' %}">Cash </a>
                                 </nav>
                             </div>
 
@@ -166,10 +180,10 @@
                             </a>
                             <div class="collapse" id="collapseEmployee" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "accounts:employee_list" %}">Employee List</a>
-                                    <a class="nav-link" href="{% url "accounts:salarystructure_list" %}">Salary Structure</a>
-                                    <a class="nav-link" href="{% url "accounts:salarysheet_list" %}">Salarysheet List</a>
-                                    <a class="nav-link" href="{% url "accounts:salary_payment_list" %}">Salary Payment List</a>
+                                    <a class="nav-link" href="{% url 'accounts:employee_list' %}">Employee List</a>
+                                    <a class="nav-link" href="{% url 'accounts:salarystructure_list' %}">Salary Structure</a>
+                                    <a class="nav-link" href="{% url 'accounts:salarysheet_list' %}">Salarysheet List</a>
+                                    <a class="nav-link" href="{% url 'accounts:salary_payment_list' %}">Salary Payment List</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSallary" aria-expanded="false" aria-controls="collapseSallary">
@@ -180,9 +194,9 @@
                             <div class="collapse" id="collapseSallary" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     
-                                    <a class="nav-link" href="{% url "accounts:expense_list" %}">Expense List </a>
+                                    <a class="nav-link" href="{% url 'accounts:expense_list' %}">Expense List </a>
 
-                                    <a class="nav-link" href="{% url "accounts:expense_payment_list" %}">Expenditure List </a>
+                                    <a class="nav-link" href="{% url 'accounts:expense_payment_list' %}">Expenditure List </a>
                                     
                                 </nav>
                             </div>
@@ -195,9 +209,9 @@
                             </a>
                             <div class="collapse" id="collapseTransaction" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                   <a class="nav-link" href="{% url "accounts:investment_list" %}">Investment List </a>
-                                   <A class="nav-link" href="{% url "accounts:withdrawal_list" %}">Withdrawal List</a>
-                                    <A class="nav-link" href="{% url "accounts:fundtransfer_list" %}">Fund Transfer List</a>
+                                   <a class="nav-link" href="{% url 'accounts:investment_list' %}">Investment List </a>
+                                   <A class="nav-link" href="{% url 'accounts:withdrawal_list' %}">Withdrawal List</a>
+                                    <A class="nav-link" href="{% url 'accounts:fundtransfer_list' %}">Fund Transfer List</a>
                                    
                                 </nav>
                             </div>
@@ -210,8 +224,8 @@
                             </a>
                             <div class="collapse" id="collapseadvance" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                   <a class="nav-link" href="{% url "accounts:Advance_Payment" %}">Advance Payment </a>  
-                                   <a class="nav-link" href="{% url "accounts:advance_payment_list" %}">Advance Payment List</a>                                   
+                                   <a class="nav-link" href="{% url 'accounts:Advance_Payment' %}">Advance Payment </a>  
+                                   <a class="nav-link" href="{% url 'accounts:advance_payment_list' %}">Advance Payment List</a>                                   
                                 </nav>
                             </div>
 
@@ -226,14 +240,15 @@
                             </a>
                             <div class="collapse" id="collapseEcommarce" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url "inventory:category-list" %}">Category</a>
-                                    <a class="nav-link" href="{% url "inventory:subcategory-list" %}">SubCategory</a>
-                                    <a class="nav-link" href="{% url "inventory:products_ecommerch" %}">Products</a>
-                                    <a class="nav-link" href="{% url "inventory:orders" %}">orders</a> 
-                                    <a class="nav-link" href="{% url "inventory:customers" %}">customers</a>
+                                    <a class="nav-link" href="{% url 'inventory:category-list' %}">Category</a>
+                                    <a class="nav-link" href="{% url 'inventory:subcategory-list' %}">SubCategory</a>
+                                    <a class="nav-link" href="{% url 'inventory:products_ecommerch' %}">Products</a>
+                                    <a class="nav-link" href="{% url 'inventory:orders' %}">orders</a> 
+                                    <a class="nav-link" href="{% url 'inventory:customers' %}">customers</a>
                                     
                                 </nav>
                             </div>
+                            
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="charts.html">

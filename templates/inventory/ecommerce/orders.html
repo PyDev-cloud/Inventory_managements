@@ -1,6 +1,11 @@
 {% extends "../../base.html" %}
 {% block title %}Orders{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <h2>Orders</h2>
 <table class="table table-bordered table-striped">
     <thead>

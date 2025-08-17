@@ -2,6 +2,11 @@
 {% block title %}Category List{% endblock %}
 {% block content %}
 
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>Categories</h2>
     <a href="{% url 'inventory:category-add' %}" class="btn btn-success mb-3">Add Category</a>

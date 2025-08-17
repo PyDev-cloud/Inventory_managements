@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-5">
     <h2>বিকাশ অ্যাকাউন্ট মুছুন</h2>
     <p>তুমি কি নিশ্চিতভাবে "{{ object.name }}" ({{ object.number }}) অ্যাকাউন্টটি মুছতে চাও?</p>

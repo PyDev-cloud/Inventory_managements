@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <h2>Delete Salary Structure</h2>
 <p>Are you sure you want to delete "{{ object.employee.name }}"?</p>
 <form method="post">

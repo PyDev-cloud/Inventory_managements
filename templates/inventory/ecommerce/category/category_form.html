@@ -1,6 +1,11 @@
 {% extends "../../../base.html" %}
 {% block title %}Category Create{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Category</h2>
     <form method="post">

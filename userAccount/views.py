@@ -97,7 +97,7 @@ class ChangeRoleView(LoginRequiredMixin, SuperuserRequiredMixin, View):
         else:
             messages.error(request, 'Invalid role')
 
-        return redirect('accounts:manage_users')
+        return redirect('user:manage_users')
 
 
 

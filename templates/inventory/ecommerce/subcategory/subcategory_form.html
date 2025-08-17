@@ -2,6 +2,11 @@
 {% load widget_tweaks %}
 {% block title %}Category Create{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Subcategory</h2>
     <form method="post">

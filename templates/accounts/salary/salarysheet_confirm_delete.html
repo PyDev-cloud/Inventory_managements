@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>বেতন শীট মুছে ফেলুন</h2>
     <p>আপনি কি নিশ্চিত যে আপনি <strong>{{ object.employee.name }} এর {{ object.month|date:"F Y" }} মাসের বেতন শীটটি মুছে ফেলতে চান?</strong></p>

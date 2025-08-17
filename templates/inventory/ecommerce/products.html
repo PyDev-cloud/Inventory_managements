@@ -1,6 +1,11 @@
 {% extends "../../base.html" %}
 {% block title %}Products{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Products</h2>
     <a href="{% url 'inventory:products_ecommerch_add' %}" class="btn btn-success">Add Product</a>

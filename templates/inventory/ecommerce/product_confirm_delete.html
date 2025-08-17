@@ -1,6 +1,11 @@
 {% extends "../../base.html" %}
 {% block title %}Orders{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-5">
     <div class="card shadow border-danger">
         <div class="card-body text-center">

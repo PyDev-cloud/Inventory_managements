@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container">
     <h4>Pay Due for Invoice #{{ purchase.id }}</h4>
     <p><strong>Total:</strong> {{ purchase.total_amount }} | <strong>Paid:</strong> {{ purchase.paid_amount }} | <strong>Due:</strong> {{ purchase.due_amount }}</p>

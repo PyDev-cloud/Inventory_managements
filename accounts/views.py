@@ -14,28 +14,28 @@ from django.utils.timezone import now
 from django.utils import timezone
 from datetime import datetime
 import calendar
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Bank Accounts CRUD
 
-class BankAccountListView(ListView):
+class BankAccountListView(LoginRequiredMixin,ListView):
     model = BankAccount
     template_name = 'accounts/bank/bankaccount_list.html'
     context_object_name = 'bank_accounts'
 
-class BankAccountCreateView(CreateView):
+class BankAccountCreateView(LoginRequiredMixin,CreateView):
     model = BankAccount
     form_class = BankAccountForm
     template_name = 'accounts/bank/bankaccount_form.html'
     success_url = reverse_lazy('accounts:bankaccount_list')
 
-class BankAccountUpdateView(UpdateView):
+class BankAccountUpdateView(LoginRequiredMixin,UpdateView):
     model = BankAccount
     form_class = BankAccountForm
     template_name = 'accounts/bank/bankaccount_form.html'
     success_url = reverse_lazy('accounts:bankaccount_list')
 
-class BankAccountDeleteView(DeleteView):
+class BankAccountDeleteView(LoginRequiredMixin,DeleteView):
     model = BankAccount
     template_name = 'accounts/bank/bankaccount_confirm_delete.html'
     success_url = reverse_lazy('accounts:bankaccount_list')
@@ -43,53 +43,53 @@ class BankAccountDeleteView(DeleteView):
 # Bkash CRUD
 
 
-class BkashAccountListView(ListView):
+class BkashAccountListView(LoginRequiredMixin,ListView):
     model = BkashAccount
     template_name = 'accounts/bkash/bkashaccount_list.html'
     context_object_name = 'bkash_accounts'
 
-class BkashAccountCreateView(CreateView):
+class BkashAccountCreateView(LoginRequiredMixin,CreateView):
     model = BkashAccount
     form_class = BkashAccountForm
     template_name = 'accounts/bkash/bkashaccount_form.html'
     success_url = reverse_lazy('accounts:bkashaccount_list')
 
-class BkashAccountUpdateView(UpdateView):
+class BkashAccountUpdateView(LoginRequiredMixin,UpdateView):
     model = BkashAccount
     form_class = BkashAccountForm
     template_name = 'accounts/bkash/bkashaccount_form.html'
     success_url = reverse_lazy('accounts:bkashaccount_list')
 
-class BkashAccountDeleteView(DeleteView):
+class BkashAccountDeleteView(LoginRequiredMixin,DeleteView):
     model = BkashAccount
     template_name = 'accounts/bkash/bkashaccount_confirm_delete.html'
     success_url = reverse_lazy('accounts:bkashaccount_list') 
 
 # Cash Account CRUD
-class CashAccountListView(ListView):
+class CashAccountListView(LoginRequiredMixin,ListView):
     model = CashAccount
     template_name = 'accounts/cash/cashaccount_list.html'
     context_object_name = 'cash_accounts'
 
-class CashAccountCreateView(CreateView):
+class CashAccountCreateView(LoginRequiredMixin,CreateView):
     model = CashAccount
     form_class = CashAccountForm
     template_name = 'accounts/cash/cashaccount_form.html'
     success_url = reverse_lazy('accounts:cashaccount-list')
 
-class CashAccountUpdateView(UpdateView):
+class CashAccountUpdateView(LoginRequiredMixin,UpdateView):
     model = CashAccount
     form_class = CashAccountForm
     template_name = 'accounts/cash/cashaccount_form.html'
     success_url = reverse_lazy('accounts:cashaccount-list')
 
-class CashAccountDeleteView(DeleteView):
+class CashAccountDeleteView(LoginRequiredMixin,DeleteView):
     model = CashAccount
     template_name = 'accounts/cash/cashaccount_confirm_delete.html'
     success_url = reverse_lazy('accounts:cashaccount-list')
 
 # Employee CRUD
-class EmployeeListView(ListView):
+class EmployeeListView(LoginRequiredMixin,ListView):
     model = Employee
     template_name = 'accounts/employe/employee_list.html'
     context_object_name = 'employees'
@@ -116,7 +116,7 @@ class EmployeeListView(ListView):
         context['position'] = self.request.GET.get('position', '')
         return context
 
-class EmployeeCreateView(CreateView):
+class EmployeeCreateView(LoginRequiredMixin,CreateView):
     model = Employee
     form_class = EmployeeForm
     template_name = 'accounts/employe/employee_form.html'
@@ -124,13 +124,13 @@ class EmployeeCreateView(CreateView):
     
 
 
-class EmployeeUpdateView(UpdateView):
+class EmployeeUpdateView(LoginRequiredMixin,UpdateView):
     model = Employee
     form_class = EmployeeForm
     template_name = 'accounts/employe/employee_form.html'
     success_url = reverse_lazy('accounts:employee_list')
 
-class EmployeeDeleteView(DeleteView):
+class EmployeeDeleteView(LoginRequiredMixin,DeleteView):
     model = Employee
     template_name = 'accounts/employe/employee_confirm_delete.html'
     success_url = reverse_lazy('accounts:employee_list')
@@ -139,7 +139,7 @@ class EmployeeDeleteView(DeleteView):
 
 
 
-class SalaryStructureListView(ListView):
+class SalaryStructureListView(LoginRequiredMixin,ListView):
     model = salaryStructure
     template_name = 'accounts/salarystructure/salarystructure_list.html'
     context_object_name = 'structures'
@@ -182,7 +182,7 @@ class SalaryStructureListView(ListView):
             context[field] = self.request.GET.get(field, '')
         return context
 
-class SalaryStructureCreateView(CreateView):
+class SalaryStructureCreateView(LoginRequiredMixin,CreateView):
     model = salaryStructure
     form_class = SalaryStructureForm
     template_name = 'accounts/salarystructure/salarystructure_form.html'
@@ -195,7 +195,7 @@ class SalaryStructureCreateView(CreateView):
             return self.form_invalid(form)
         return super().form_valid(form)
 
-class SalaryStructureUpdateView(UpdateView):
+class SalaryStructureUpdateView(LoginRequiredMixin,UpdateView):
     model = salaryStructure
     form_class = SalaryStructureForm
     template_name = 'accounts/salarystructure/salarystructure_form.html'
@@ -214,7 +214,7 @@ class SalaryStructureDeleteView(DeleteView):
 
 
 # Salary Sheet 
-class SalarySheetListView(ListView):
+class SalarySheetListView(LoginRequiredMixin,ListView):
     model = SalarySheet
     template_name = 'accounts/salary/salarysheet_list.html'
     context_object_name = 'sheets'
@@ -310,7 +310,7 @@ def get_salary_structure(request, employee_id):
     except salaryStructure.DoesNotExist:
         return JsonResponse({"error": "Salary structure not found"}, status=404)
 
-class SalarySheetCreateView(CreateView):
+class SalarySheetCreateView(LoginRequiredMixin,CreateView):
     model = SalarySheet
     form_class = SalarySheetForm
     template_name = 'accounts/salary/salarysheet_form.html'
@@ -359,7 +359,7 @@ class SalarySheetCreateView(CreateView):
 
 
 
-class SalarySheetUpdateView(UpdateView):
+class SalarySheetUpdateView(LoginRequiredMixin,UpdateView):
     model = SalarySheet
     form_class = SalarySheetForm
     template_name = 'accounts/salary/salarysheet_form.html'
@@ -372,18 +372,18 @@ class SalarySheetDeleteView(DeleteView):
 
 
 # Expense CRUD
-class ExpenseListView(ListView):
+class ExpenseListView(LoginRequiredMixin,ListView):
     model = Expense
     template_name = 'accounts/expance/expense_list.html'
     context_object_name = 'expenses'
 
-class ExpenseCreateView(CreateView):
+class ExpenseCreateView(LoginRequiredMixin,CreateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'accounts/expance/expense_list_create.html'
     success_url = reverse_lazy('accounts:expense_list')
 
-class ExpenseUpdateView(UpdateView):
+class ExpenseUpdateView(LoginRequiredMixin,UpdateView):
     model = Expense
     form_class = ExpenseForm
     template_name = 'accounts/expance/expense_list_create.html'
@@ -396,7 +396,7 @@ class ExpenseUpdateView(UpdateView):
         messages.error(self.request, "Failed to update expense ❌")
         return super().form_invalid(form)
 
-class ExpenseDeleteView(DeleteView):
+class ExpenseDeleteView(LoginRequiredMixin,DeleteView):
     model = Expense
     template_name = 'accounts/expance/expense_confirm_delete.html'
     success_url = reverse_lazy('accounts:expense_list')
@@ -404,7 +404,7 @@ class ExpenseDeleteView(DeleteView):
 
 
 
-class SalaryPaymentListView(ListView):
+class SalaryPaymentListView(LoginRequiredMixin,ListView):
     model = SalaryPayment
     template_name = 'accounts/Employe/salary_payment_list.html'
     context_object_name = 'payments'
@@ -444,7 +444,7 @@ class SalaryPaymentListView(ListView):
 
 
 
-class SalaryPaymentCreateView(CreateView):
+class SalaryPaymentCreateView(LoginRequiredMixin,CreateView):
     model = SalaryPayment
     form_class = SalaryPaymentForm
     template_name = 'accounts/Employe/salary_payment_form.html'
@@ -507,7 +507,7 @@ def get_salary_structure_from_sheet(request, sheet_id):
 
 
 
-class ExpensePaymentListView(ListView):
+class ExpensePaymentListView(LoginRequiredMixin,ListView):
     model = ExpensePayment
     template_name = 'accounts/expance/expense_payment_list.html'
     context_object_name = 'payments'
@@ -542,7 +542,7 @@ class ExpensePaymentListView(ListView):
 
 
 
-class ExpencePaymentCreateView(CreateView):
+class ExpencePaymentCreateView(LoginRequiredMixin,CreateView):
     model = ExpensePayment
     form_class = ExpensePaymentForm
     template_name = 'accounts/expance/expense_form.html'
@@ -586,7 +586,7 @@ class ExpencePaymentCreateView(CreateView):
         
 
 
-class InvestMentListView(ListView):
+class InvestMentListView(LoginRequiredMixin,ListView):
     model = InvestMent
     template_name = 'accounts/investment/investment_list.html'
     context_object_name = 'investments'
@@ -619,7 +619,7 @@ class InvestMentListView(ListView):
         return context
 
 
-class InvestMentCreateView(CreateView):
+class InvestMentCreateView(LoginRequiredMixin,CreateView):
     model = InvestMent
     form_class = InvestMentForm
     template_name = 'accounts/investment/investment_form.html'
@@ -662,7 +662,7 @@ class InvestMentCreateView(CreateView):
             return redirect(self.success_url)
         
 
-class WithdrawalListView(ListView):
+class WithdrawalListView(LoginRequiredMixin,ListView):
     model = Withdrawal
     template_name = 'accounts/withdrawal/withdrawal_list.html'
     context_object_name = 'withdrawals'
@@ -694,7 +694,7 @@ class WithdrawalListView(ListView):
         context['year'] = year
         return context
 
-class WithdrawalCreateView(CreateView):
+class WithdrawalCreateView(LoginRequiredMixin,CreateView):
     model = Withdrawal
     form_class = WithdrawalForm
     template_name = 'accounts/withdrawal/withdrawal_form.html'
@@ -737,7 +737,7 @@ class WithdrawalCreateView(CreateView):
             return redirect(self.success_url)
 
 
-class FundTransferListView(ListView):
+class FundTransferListView(LoginRequiredMixin,ListView):
     model = FundTransfer
     template_name = 'accounts/fundTransfer/fundtransfer_list.html'
     context_object_name = 'transfers'
@@ -769,7 +769,7 @@ class FundTransferListView(ListView):
         context['year'] = year
         return context
 
-class FundTransferCreateView(CreateView):
+class FundTransferCreateView(LoginRequiredMixin,CreateView):
     model = FundTransfer
     form_class = FundTransferForm
     template_name = 'accounts/fundTransfer/fundTransfer_form.html'
@@ -828,7 +828,7 @@ class FundTransferCreateView(CreateView):
 
 
 
-class AdvancePaymentListView(ListView):
+class AdvancePaymentListView(LoginRequiredMixin,ListView):
     model = AdvancePayment
     template_name = 'accounts/advancePayment/advancepayment_list.html'
     context_object_name = 'payments'
@@ -886,7 +886,7 @@ class AdvancePaymentListView(ListView):
 
 
 
-class AdvancePaymentCreateView(CreateView):
+class AdvancePaymentCreateView(LoginRequiredMixin,CreateView):
     model = AdvancePayment
     form_class = AdvancePaymentForm
     template_name = 'accounts/advancePayment/advance_payment_form.html'

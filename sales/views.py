@@ -10,8 +10,9 @@ from django.contrib import messages
 from .services import update_product_stock
 from django.db import transaction
 from inventory.utils import reduce_office_stock, update_product_stock
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class CustomerListView(ListView):
+class CustomerListView(LoginRequiredMixin,ListView):
     model = Customer
     template_name = 'sales/customers/customer_list.html'  # your template path
     context_object_name = 'customers'
@@ -38,14 +39,14 @@ class CustomerListView(ListView):
         return context
 
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(LoginRequiredMixin,CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'sales/customers/customer_form.html'  # your template path
     success_url = reverse_lazy('sales:customer_list')  # redirect after success, adjust name accordingly
 
 
-class SaleListView(ListView):
+class SaleListView(LoginRequiredMixin,ListView):
     model = Sale
     template_name = 'sales/sales_templete/sales_list.html'
     context_object_name = 'sales'
@@ -87,12 +88,12 @@ class SaleListView(ListView):
         context['payment_status'] = self.request.GET.get('payment_status', '')
         return context
 
-class SaleDetailView(DetailView):
+class SaleDetailView(LoginRequiredMixin,DetailView):
     model = Sale
     template_name = 'sales/sales_templete/sales_detail.html'
     context_object_name = 'sale'
 
-class SaleCreateView(View):
+class SaleCreateView(LoginRequiredMixin,View):
     def get(self, request):
         form = SaleForm()
         formset = SaleItemFormSet()
@@ -223,7 +224,7 @@ class SaleCreateView(View):
         account.save()
 
 
-class SaleDuePaymentView(View):
+class SaleDuePaymentView(LoginRequiredMixin,View):
     def get(self, request, pk):
         sale = get_object_or_404(Sale, pk=pk)
         form = DuePaymentForm(initial={

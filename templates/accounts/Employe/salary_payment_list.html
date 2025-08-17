@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="mt-4">
     <h3 class="mb-4 text-center">Salary Payments - {{ month_name }} {{ year }}</h3>
 

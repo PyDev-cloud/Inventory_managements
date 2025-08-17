@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h4>Pay Due for Invoice #{{ sale.id }}</h4>
     <p><strong>Customer:</strong> {{ sale.customer.name }}</p>

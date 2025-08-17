@@ -12,8 +12,9 @@ from django.contrib import messages
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum,Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class SupplierListView(ListView):
+class SupplierListView(LoginRequiredMixin,ListView):
     model = Supplier
     template_name = 'inventory/supplier/supplier_list.html'
     context_object_name = 'suppliers'
@@ -34,7 +35,7 @@ class SupplierListView(ListView):
 
 
 
-class SupplierCreateView(CreateView):
+class SupplierCreateView(LoginRequiredMixin,CreateView):
     model = Supplier
     form_class = SupplierForm
     template_name = 'inventory/supplier/supplier_form.html'
@@ -44,7 +45,7 @@ class SupplierCreateView(CreateView):
 
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin,ListView):
     model = Product
     template_name = 'inventory/product/product_list.html'
     context_object_name = 'products'
@@ -76,7 +77,7 @@ class ProductListView(ListView):
 
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin,CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'inventory/product/product_form.html'
@@ -84,7 +85,7 @@ class ProductCreateView(CreateView):
 
 
 
-class PurchaseListView(ListView):
+class PurchaseListView(LoginRequiredMixin,ListView):
     model = Purchase
     template_name = 'inventory/purchase/purchase_list.html'
     context_object_name = 'purchases'
@@ -128,7 +129,7 @@ class PurchaseListView(ListView):
         context['payment_status'] = self.request.GET.get('payment_status', '')  
         return context
 
-class PurchaseCreateView(View):
+class PurchaseCreateView(LoginRequiredMixin,View):
     def get(self, request):
         form = PurchaseForm()
         formset = PurchaseItemFormSet()
@@ -242,7 +243,7 @@ class PurchaseCreateView(View):
 
 
 
-class PurchaseDuePaymentView(View):
+class PurchaseDuePaymentView(LoginRequiredMixin,View):
     def get(self, request, pk):
         purchase = get_object_or_404(Purchase, pk=pk)
         form = DuePaymentForm(initial={
@@ -309,7 +310,7 @@ class PurchaseDuePaymentView(View):
 
 
 
-class PurchaseDetailView(DetailView):
+class PurchaseDetailView(LoginRequiredMixin,DetailView):
     model = Purchase
     template_name = 'inventory/purchase/purchase_detail.html'
     context_object_name = 'purchase'
@@ -317,7 +318,7 @@ class PurchaseDetailView(DetailView):
 
 
 
-class TransferStockView(View):
+class TransferStockView(LoginRequiredMixin,View):
     def get(self, request):
         form = StockTransferForm()
         # Get all products in the form's queryset
@@ -371,7 +372,7 @@ class TransferStockView(View):
 
 
 
-    from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -383,54 +384,54 @@ from ecommerce.forms import ProductCategoryLinkForm
 
 
 # Category Views
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin,ListView):
     model = Category
     template_name = 'inventory/ecommerce/category/category_list.html'
     context_object_name = 'categories'
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin,CreateView):
     model = Category
     fields = ['name', 'slug']
     template_name = 'inventory/ecommerce/category/category_form.html'
     success_url = reverse_lazy('inventory:category-list')
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin,UpdateView):
     model = Category
     fields = ['name', 'slug']
     template_name = 'inventory/ecommerce/category/category_form.html'
     success_url = reverse_lazy('inventory:category-list')
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(LoginRequiredMixin,DeleteView):
     model = Category
     template_name = 'inventory/ecommerce/category/category_confirm_delete.html'
     success_url = reverse_lazy('inventory:category-list')
 
 
 # SubCategory Views
-class SubCategoryListView(ListView):
+class SubCategoryListView(LoginRequiredMixin,ListView):
     model = SubCategory
     template_name = 'inventory/ecommerce/subcategory/subcategory_list.html'
     context_object_name = 'subcategories'
 
 
-class SubCategoryCreateView(CreateView):
+class SubCategoryCreateView(LoginRequiredMixin,CreateView):
     model = SubCategory
     fields = ['category', 'name', 'slug']
     template_name = 'inventory/ecommerce/subcategory/subcategory_form.html'
     success_url = reverse_lazy('inventory:subcategory-list')
 
 
-class SubCategoryUpdateView(UpdateView):
+class SubCategoryUpdateView(LoginRequiredMixin,UpdateView):
     model = SubCategory
     fields = ['category', 'name', 'slug']
     template_name = 'inventory/ecommerce/subcategory/subcategory_form.html'
     success_url = reverse_lazy('inventory:subcategory-list')
 
 
-class SubCategoryDeleteView(DeleteView):
+class SubCategoryDeleteView(LoginRequiredMixin,DeleteView):
     model = SubCategory
     template_name = 'inventory/ecommerce/subcategory/subcategory_confirm_delete.html'
     success_url = reverse_lazy('inventory:subcategory-list')

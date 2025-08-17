@@ -1,6 +1,11 @@
 {% extends "../../../base.html" %}
 {% block title %}Category Create{% endblock %}
 {% block content %}
+ {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 <div class="container mt-4">
     <h2>Delete Category</h2>
     <p>Are you sure you want to delete "{{ object.name }}"?</p>

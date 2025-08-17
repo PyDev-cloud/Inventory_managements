@@ -12,8 +12,10 @@ from accounts.models import (
 )
 from returns.models import Return, ReturnItem
 from accounts.models import Employee
+from django.contrib.auth.decorators import login_required
 
 # Helper: Get return stats
+
 def get_monthly_return_quantity_and_amount(year, month):
     start_of_month = timezone.datetime(year=year, month=month, day=1, tzinfo=timezone.get_current_timezone())
     last_day = monthrange(year, month)[1]
@@ -34,6 +36,7 @@ def get_monthly_return_quantity_and_amount(year, month):
     return total_quantity, total_amount
 
 # FIFO-based COGS calculation
+
 def calculate_fifo_cogs(sale_items):
     cogs_total = Decimal('0')
 
@@ -61,6 +64,7 @@ def calculate_fifo_cogs(sale_items):
     return cogs_total
 
 # Dashboard view
+@login_required
 def dashboard_view(request):
     today = timezone.now()
     year = today.year

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order,ProductCategoryLink
+from .models import Order,ProductCategoryLink,Slider
 
 from inventory.models import Product
 
@@ -35,3 +35,9 @@ class ProductCategoryLinkForm(forms.ModelForm):
             'previous_price': forms.NumberInput(attrs={'class': 'form-control'}),
             'selles_price': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class slider_form(forms.ModelForm):
+    class Meta:
+        model=Slider
+        fields='__all__'

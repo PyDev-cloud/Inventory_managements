@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC+06:00 Dhaka'
 
 USE_I18N = True
 
@@ -143,6 +143,8 @@ STATIC_URL = '/static/'
 
 # Directory where collectstatic will collect files for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Use only in production
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Additional locations of static files (useful in development or for custom apps)
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Optional: static folder in root project for development

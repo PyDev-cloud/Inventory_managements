@@ -378,11 +378,11 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from ecommerce.models import ProductCategoryLink, Order, CustomerUser,Category,SubCategory
 from .forms import ProductForm  # Product add/edit ফর্ম তৈরি করতে হবে
-from ecommerce.forms import ProductCategoryLinkForm
+from ecommerce.forms import ProductCategoryLinkForm,slider_form
+from ecommerce.models import Slider
 
 
-
-
+#Ecommerce Funstionality
 # Category Views
 class CategoryListView(LoginRequiredMixin,ListView):
     model = Category
@@ -438,8 +438,6 @@ class SubCategoryDeleteView(LoginRequiredMixin,DeleteView):
 
 
 
-
-
 # Decorator to ensure only staff/admin can access
 def admin_required(view_func):
     decorated_view_func = login_required(view_func)
@@ -487,6 +485,37 @@ def product_add(request):
     
     
     return render(request, 'inventory/ecommerce/product_form.html', {'form': form, 'form_title': 'Add Product'})
+
+def slider_create(request):
+    if request.method == 'POST':
+        form = slider_form(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard:slider_list')  # 'dashboard' নামের URL থাকতে হবে
+    else:
+        form = slider_form()
+    
+    return render(request, 'inventory/ecommerce/slider.html', {'form': form})
+
+def slider_list(request):
+    sliders = Slider.objects.all()
+    return render(request, 'inventory/ecommerce/slider_list.html', {'sliders': sliders})
+
+def slider_edit(request, pk):
+    slider_link = get_object_or_404(Slider, pk=pk)
+
+    if request.method == "POST":
+        form = slider_form(request.POST, request.FILES, instance=slider_link)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory:slider_list')  
+    else:
+        form = slider_form(instance=slider_link)
+
+    return render(request, 'inventory/ecommerce/slider.html', {
+        'form': form,
+        'form_title': 'Edit Slider',
+    })
 
 # Edit product
 #@admin_required

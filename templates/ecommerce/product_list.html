@@ -2,11 +2,10 @@
 {% block title %}All Products{% endblock %}
 
 {% block content %}
- {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
+
+{% include 'ecommerce/slider.html' %}
+
+
 <div class="container mt-5">
     <h2 class="mb-4 text-center">All Products</h2>
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView
-from .models import Cart, CartItem, Order, OrderItem, ShippingInfo, Payment, CustomerUser, ProductCategoryLink
+from django.views.generic import ListView, DetailView,TemplateView
+from .models import Cart, CartItem, Order, OrderItem, ShippingInfo, Payment, CustomerUser, ProductCategoryLink,Slider
 from .forms import CartAddForm, CheckoutForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -16,6 +16,11 @@ class ProductListView(ListView):
     model = ProductCategoryLink
     template_name = 'ecommerce/product_list.html'
     context_object_name = 'products'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sliders'] = Slider.objects.all()
+        return context
+    
 
 
 # পণ্যের বিস্তারিত
@@ -293,3 +298,7 @@ class OrderSuccessView(DetailView):
     model = Order
     template_name = 'ecommerce/order_success.html'
     context_object_name = 'order'
+
+
+
+    

@@ -1,0 +1,83 @@
+<style>
+    #mainSlider {
+        height: 70vh; /* Desktop: 70% of screen height */
+        overflow: hidden;
+    }
+
+    .carousel-inner,
+    .carousel-item {
+        height: 100%;
+    }
+
+    .carousel-item img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .carousel-caption {
+        bottom: 20%;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        #mainSlider {
+            height: 40vh; /* Mobile: 40% of screen height */
+        }
+
+        .carousel-caption {
+            bottom: 10%;
+            font-size: 14px;
+            padding: 1rem;
+        }
+
+        .carousel-caption h2 {
+            font-size: 1rem;
+        }
+
+        .carousel-caption p {
+            font-size: 0.8rem;
+        }
+
+        .carousel-caption .btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+</style>
+
+<div id="mainSlider" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+        {% for slide in sliders %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ slide.image.url }}" class="d-block w-100" alt="{{ slide.heading|default:'Slide Image' }}">
+
+                <div class="carousel-caption bg-dark bg-opacity-50 rounded-3 p-4">
+                    <div class="custom-carousel-content text-white">
+                        {% if slide.heading %}
+                            <h2 class="fw-bold">{{ slide.heading }}</h2>
+                        {% endif %}
+                        {% if slide.paragraph %}
+                            <p class="lead">{{ slide.paragraph }}</p>
+                        {% endif %}
+                        
+                        <a href="#" class="btn btn-warning btn-lg mt-3 shadow-sm">Get Now</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainSlider" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#mainSlider" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

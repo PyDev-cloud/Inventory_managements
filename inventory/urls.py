@@ -10,7 +10,7 @@ from .views import (
     TransferStockView,
     PurchaseDuePaymentView,
     CategoryListView,CategoryCreateView,CategoryUpdateView,CategoryDeleteView,
-    SubCategoryListView,SubCategoryCreateView,SubCategoryUpdateView,SubCategoryDeleteView
+    SubCategoryListView,SubCategoryCreateView,SubCategoryUpdateView,SubCategoryDeleteView,
 )
 from . import views
 
@@ -57,5 +57,10 @@ urlpatterns = [
 
     # Customer URLs
     path('customers/', views.customers, name='customers'),
+
+    #slider
+    path('slider/', views.slider_create, name='slider'), 
+    path('slider_list/',views.slider_list,name='slider_list'),
+    path('slider/<int:pk>/', views.slider_edit, name='slider_edit'),
 
 ]

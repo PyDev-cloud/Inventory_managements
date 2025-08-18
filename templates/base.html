@@ -233,39 +233,44 @@
 
 
                             <div class="sb-sidenav-menu-heading">Ecommerce</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseEcommarce" aria-expanded="false" aria-controls="collapseEcommarce">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Products
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseEcommarce" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url 'inventory:category-list' %}">Category</a>
-                                    <a class="nav-link" href="{% url 'inventory:subcategory-list' %}">SubCategory</a>
-                                    <a class="nav-link" href="{% url 'inventory:products_ecommerch' %}">Products</a>
-                                    <a class="nav-link" href="{% url 'inventory:orders' %}">orders</a> 
-                                    <a class="nav-link" href="{% url 'inventory:customers' %}">customers</a>
-                                    
-                                </nav>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseEcommarce" aria-expanded="false" aria-controls="collapseEcommarce">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    Ecommerce Product
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseEcommarce" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{% url 'inventory:category-list' %}">Category</a>
+                                        <a class="nav-link" href="{% url 'inventory:subcategory-list' %}">SubCategory</a>
+                                        <a class="nav-link" href="{% url 'inventory:products_ecommerch' %}">Products</a>
+                                        <a class="nav-link" href="{% url 'inventory:orders' %}">orders</a> 
+                                        <a class="nav-link" href="{% url 'inventory:customers' %}">customers</a>
+                                        
+                                    </nav>
+                                </div>
+
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSlider" aria-expanded="false" aria-controls="collapseSlider">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    Ecommerce Slider
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseSlider" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{% url 'inventory:slider' %}">Slider Create</a>
+                                        <a class="nav-link" href="{% url 'inventory:slider_list' %}">Slider Create</a>
+                                        
+                                        
+                                    </nav>
+                                </div>
                             </div>
                             
-                            
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="charts.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
-                            </a>
-                            <a class="nav-link" href="tables.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tables
-                            </a>
+            
                         </div>
-                    </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        DUIBD
-                    </div>
-                </nav>
+                            DUIBD
+                        </div>
+                
             </div>
             <div id="layoutSidenav_content">
                 <main>

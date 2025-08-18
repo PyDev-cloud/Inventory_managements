@@ -116,3 +116,11 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment for Order {self.order.id} via {self.method}"
+    
+
+
+class Slider(models.Model):
+    heading=models.CharField(max_length=500, blank=True,null=True)
+    paragraph=models.TextField(max_length=600, blank=True,null=True)
+    image = models.ImageField(upload_to='slider_images/',null=False,blank=False)
+    

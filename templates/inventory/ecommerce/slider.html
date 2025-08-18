@@ -1,0 +1,27 @@
+{% extends "../../base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+
+<h1>Create a New Slider</h1>
+
+    <!-- Show form validation errors -->
+    {% if form.errors %}
+        <div style="color: red;">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Create</button>
+    </form>
+
+    {% endblock %}

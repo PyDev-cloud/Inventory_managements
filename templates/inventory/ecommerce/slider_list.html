@@ -1,0 +1,45 @@
+{% extends "../../base.html" %}
+{% block title %}Slider List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">All Sliders</h2>
+
+    <a href="{% url 'inventory:slider' %}" class="btn btn-primary mb-3">Add New Slider</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Heading</th>
+                <th>Paragraph</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slider in sliders %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% if slider.image %}
+                        <img src="{{ slider.image.url }}" alt="slider" width="120" height="80" style="object-fit: cover;">
+                    {% else %}
+                        <span class="text-muted">No image</span>
+                    {% endif %}
+                </td>
+                <td>{{ slider.heading|default:"-" }}</td>
+                <td>{{ slider.paragraph|truncatewords:12 }}</td>
+                <td>
+                    <a href="{% url 'inventory:slider_edit' slider.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                   
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">No sliders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

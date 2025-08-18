@@ -135,12 +135,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const fromMethod = document.getElementById("paid-from-method");
   const advanceBalanceDiv = document.getElementById("advance-balance");
 
+  // Supplier এর অ্যাডভান্স ডাটা ম্যাপ
   const advanceMap = {
     {% for s in suppliers %}
       "{{ s.id }}": {{ s.advance_payment|floatformat:2 }},
     {% endfor %}
   };
 
+  // সাবটোটাল ও অন্যান্য হিসাব আপডেট
   function updateSubtotals() {
     const rows = document.querySelectorAll(".formset-row");
     let grandTotal = 0;
@@ -164,6 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateAdvanceSplit(paid);
   }
 
+  // Advance Split হিসাব
   function updateAdvanceSplit(paid) {
     const supplierId = supplierSelect.value;
     const advance = parseFloat(advanceMap[supplierId]) || 0;
@@ -175,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
     advanceBalanceDiv.value = `৳ ${advance.toFixed(2)}`;
   }
 
+  // নতুন ফর্মসেট রো ক্লোন
   function cloneFormsetRow() {
     const container = document.getElementById("formset-container");
     const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
@@ -190,12 +194,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    newRow.querySelector(".add-form-row").outerHTML = `<button type="button" class="btn btn-danger remove-form-row">➖</button>`;
+    // Add/remove বাটনের সঠিক সেটিং
+    const actionCol = newRow.querySelector(".col-md-2.text-end");
+    actionCol.innerHTML = `<button type="button" class="btn btn-danger remove-form-row">➖</button>`;
+
     container.appendChild(newRow);
     totalFormsInput.value = newFormIndex + 1;
+
+    // নতুন ইনপুটগুলোর সাথে ইভেন্ট রি-বাইন্ড
+    newRow.querySelector(".qty-input").addEventListener("input", updateSubtotals);
+    newRow.querySelector(".price-input").addEventListener("input", updateSubtotals);
+
     updateSubtotals();
   }
 
+  // Add/Remove বাটন ক্লিক হ্যান্ডলার
   document.getElementById("formset-container").addEventListener("click", function (e) {
     if (e.target.classList.contains("add-form-row")) {
       cloneFormsetRow();
@@ -208,6 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // ইনপুটগুলোর জন্য ইভেন্ট লিসেনার
   document.querySelectorAll(".qty-input, .price-input").forEach(el => {
     el.addEventListener("input", updateSubtotals);
   });
@@ -216,12 +230,15 @@ document.addEventListener("DOMContentLoaded", function () {
     updateSubtotals();
     updateAdvanceSplit(parseFloat(paidInput.value));
   });
+
+  // Supplier পরিবর্তন হলে অ্যাডভান্স ব্যালেন্স ও স্প্লিট আপডেট
   supplierSelect.addEventListener("change", () => {
     updateAdvanceSplit(parseFloat(paidInput.value));
     const adv = advanceMap[supplierSelect.value] || 0;
     advanceBalanceDiv.value = `৳ ${adv.toFixed(2)}`;
   });
 
+  // প্রথমবার পেজ লোডে হিসাব চালু
   updateSubtotals();
 });
 </script>

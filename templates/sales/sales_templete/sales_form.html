@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fromMethod = document.getElementById("paid-from-method");
   const advanceBalanceDiv = document.getElementById("advance-balance");
 
-  // Map customer_id to advance payment amount from backend context variable 'customers'
+  // Customer advance map from Django context
   const advanceMap = {
     {% for c in customers %}
       "{{ c.id }}": {{ c.advance_payment|floatformat:2 }},
@@ -201,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const packing = parseFloat(packingInput.value) || 0;
     const delivery = parseFloat(deliveryInput.value) || 0;
 
-    // Updated total = grandTotal + packing + delivery - discount
     const totalAfterAll = Math.max(grandTotal + packing + delivery - discount, 0);
     totalInput.value = totalAfterAll.toFixed(2);
 
@@ -225,26 +224,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function cloneFormsetRow() {
     const container = document.getElementById("formset-container");
-    const totalFormsInput = document.getElementById("id_form-TOTAL_FORMS");
+    const totalFormsInput = document.querySelector("[name$='-TOTAL_FORMS']");
+
+    if (!totalFormsInput) {
+      console.error("Formset management input TOTAL_FORMS not found.");
+      return;
+    }
+
     const newFormIndex = parseInt(totalFormsInput.value);
     const lastRow = container.querySelector(".formset-row:last-child");
     const newRow = lastRow.cloneNode(true);
 
+    // Reset form field values and update names/ids
     newRow.querySelectorAll("input, select").forEach(input => {
       if (input.name) {
         input.name = input.name.replace(/-\d+-/, `-${newFormIndex}-`);
         input.id = input.id.replace(/-\d+-/, `-${newFormIndex}-`);
-        if (!input.classList.contains("subtotal")) input.value = "";
+        if (!input.classList.contains("subtotal")) {
+          input.value = "";
+        } else {
+          input.value = "0.00";
+        }
       }
     });
 
-    // Replace add button in clone with remove button
-    newRow.querySelector(".add-form-row").outerHTML = `<button type="button" class="btn btn-danger remove-form-row">➖</button>`;
+    // Replace add button with remove button
+    const actionCol = newRow.querySelector(".col-md-2.text-end");
+    if (actionCol) {
+      actionCol.innerHTML = `<button type="button" class="btn btn-danger remove-form-row">➖</button>`;
+    }
+
     container.appendChild(newRow);
     totalFormsInput.value = newFormIndex + 1;
+
+    // Bind event listeners to new inputs
+    newRow.querySelector(".qty-input")?.addEventListener("input", updateSubtotals);
+    newRow.querySelector(".price-input")?.addEventListener("input", updateSubtotals);
+
     updateSubtotals();
   }
 
+  // Handle add/remove buttons
   document.getElementById("formset-container").addEventListener("click", function (e) {
     if (e.target.classList.contains("add-form-row")) {
       cloneFormsetRow();
@@ -257,24 +277,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Event listeners for recalculation
-  document.querySelectorAll(".qty-input, .price-input").forEach(el => {
-    el.addEventListener("input", updateSubtotals);
-  });
+  // Initial binding to existing rows
+  document.querySelectorAll(".qty-input").forEach(el => el.addEventListener("input", updateSubtotals));
+  document.querySelectorAll(".price-input").forEach(el => el.addEventListener("input", updateSubtotals));
+
   discountInput.addEventListener("input", updateSubtotals);
   packingInput.addEventListener("input", updateSubtotals);
   deliveryInput.addEventListener("input", updateSubtotals);
+
   paidInput.addEventListener("input", () => {
     updateSubtotals();
     updateAdvanceSplit(parseFloat(paidInput.value));
   });
+
   customerSelect.addEventListener("change", () => {
     updateAdvanceSplit(parseFloat(paidInput.value));
-    const adv = advanceMap[customerSelect.value] || 0;
-    advanceBalanceDiv.value = `৳ ${adv.toFixed(2)}`;
   });
 
+  // Initial calculation
   updateSubtotals();
 });
 </script>
+
 {% endblock %}
